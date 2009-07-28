@@ -1,9 +1,15 @@
-#!perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
 use lib 'lib';
 use CPAN::Mini::Webserver;
 use Getopt::Long;
+
+# clear cache on SIGUSR1
+$SIG{'USR1'} = sub {
+    print STDERR "received SIGUSR1, clearing cache\n";
+    App::Cache->new({ application => 'CPAN::Mini::Webserver' })->clear;
+};
 
 my $port = 2963;
 my $base_uri = '';
@@ -36,6 +42,9 @@ copy of CPAN using minicpan.  Then you may run minicpan_webserver and
 search and browse Mini CPAN at http://localhost:2963/. The listening
 port can be configured with C<--port> command line option. Setting
 C<--base-uri> will make all absolute urls be prefixed with specified value.
+
+Sending SIGUSR1 to the process will cause clearing of application cache
+thus reloading minicpan data files.
 
 =head1 MINICPAN CONFIGURATION
 

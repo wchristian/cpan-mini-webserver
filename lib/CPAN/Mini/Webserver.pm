@@ -38,15 +38,19 @@ if ( eval { require HTTP::Server::Simple::Bonjour } ) {
 
 has 'hostname'            => ( is => 'rw' );
 has 'cgi'                 => ( is => 'rw', isa => 'CGI' );
-has 'directory'           => ( is => 'rw', isa => 'Path::Class::Dir' );
-has 'scratch'             => ( is => 'rw', isa => 'Path::Class::Dir' );
-has 'author_type'         => ( is => 'rw' );
-has 'parse_cpan_authors'  => ( is => 'rw' );
-has 'parse_cpan_packages' => ( is => 'rw', isa => 'Parse::CPAN::Packages' );
+has 'directory'           => ( is => 'rw', isa => 'Path::Class::Dir', lazy => 1, default => sub { dir( glob $_[0]->_config->{local} ) } );
+has 'scratch'             => ( is => 'rw', isa => 'Path::Class::Dir', lazy => 1, default => sub { $_[0]->_cache->scratch } );
+has 'author_type'         => ( is => 'rw', lazy => 1, default => sub { -f $_[0]->_whois_filename ? 'Whois' : 'Authors' } );
 has 'pauseid'             => ( is => 'rw' );
 has 'distvname'           => ( is => 'rw' );
 has 'filename'            => ( is => 'rw' );
-has 'index' => ( is => 'rw', isa => 'CPAN::Mini::Webserver::Index' );
+has 'index'               => ( is => 'rw', isa => 'CPAN::Mini::Webserver::Index', lazy => 1, default => sub { return $_[0]->_init_index } );
+
+has '_cache'              => ( is => 'rw', isa => 'App::Cache', lazy => 1, default => sub { return App::Cache->new( { ttl => 60 * 60 } ); } );
+has '_config'             => ( is => 'rw', isa => 'HashRef', lazy => 1, default => sub { return { CPAN::Mini->read_config } });
+has '_packages_filename'  => ( is => 'rw', isa => 'Path::Class::File', lazy => 1, default => sub { return file( $_[0]->directory, 'modules', '02packages.details.txt.gz' ) } );
+has '_whois_filename'     => ( is => 'rw', isa => 'Path::Class::File', lazy => 1, default => sub { return file( $_[0]->directory, 'authors', '00whois.xml' ) } );
+has '_authors_filename'   => ( is => 'rw', isa => 'Path::Class::File', lazy => 1, default => sub { return file( $_[0]->directory, 'authors', '01mailrc.txt.gz' ) } );
 
 our $VERSION = '0.45';
 
@@ -110,43 +114,40 @@ sub send_http_header {
 # listening socket. we use it load the indexes
 sub after_setup_listener {
     my $self      = shift;
-    my %config    = CPAN::Mini->read_config;
-    my $directory = dir( glob $config{local} );
-    $self->directory($directory);
-    my $authors_filename = file( $directory, 'authors', '01mailrc.txt.gz' );
-    my $packages_filename
-        = file( $directory, 'modules', '02packages.details.txt.gz' );
-    die "Please set up minicpan"
-        unless defined($directory)
-            && ( -d $directory )
-            && ( -f $authors_filename )
-            && ( -f $packages_filename );
-    my $cache = App::Cache->new( { ttl => 60 * 60 } );
 
-    my $whois_filename = file( $directory, 'authors', '00whois.xml' );
-    my $parse_cpan_authors;
-    if ( -f $whois_filename ) {
-        $self->author_type('Whois');
-        $parse_cpan_authors = $cache->get_code( 'parse_cpan_whois',
-            sub { Parse::CPAN::Whois->new( $whois_filename->stringify ) } );
+    die "Please set up minicpan"
+        unless defined($self->directory)
+            && ( -d $self->directory )
+            && ( -f $self->_authors_filename )
+            && ( -f $self->_packages_filename );
+}
+
+sub _init_index {
+    my $self      = shift;
+    
+    my $index = CPAN::Mini::Webserver::Index->new;
+    $index->create_index( $self->parse_cpan_authors, $self->parse_cpan_packages );
+    
+    return $index;
+}
+
+sub parse_cpan_authors {
+    my $self = shift;
+
+    if ( $self->author_type eq 'Whois' ) {
+        return $self->_cache->get_code( 'parse_cpan_whois',
+            sub { Parse::CPAN::Whois->new( $self->_whois_filename->stringify ) } );
     } else {
-        $self->author_type('Authors');
-        $parse_cpan_authors = $cache->get_code( 'parse_cpan_authors',
-            sub { Parse::CPAN::Authors->new( $authors_filename->stringify ) }
+        return $self->_cache->get_code( 'parse_cpan_authors',
+            sub { Parse::CPAN::Authors->new( $self->_authors_filename->stringify ) }
         );
     }
-    my $parse_cpan_packages = $cache->get_code( 'parse_cpan_packages',
-        sub { Parse::CPAN::Packages->new( $packages_filename->stringify ) } );
+}
 
-    $self->parse_cpan_authors($parse_cpan_authors);
-    $self->parse_cpan_packages($parse_cpan_packages);
-
-    my $scratch = dir( $cache->scratch );
-    $self->scratch($scratch);
-
-    my $index = CPAN::Mini::Webserver::Index->new;
-    $self->index($index);
-    $index->create_index( $parse_cpan_authors, $parse_cpan_packages );
+sub parse_cpan_packages {
+    my $self = shift;
+    return $self->_cache->get_code( 'parse_cpan_packages',
+        sub { Parse::CPAN::Packages->new( $self->_packages_filename->stringify ) } );
 }
 
 sub handle_request {

@@ -4,6 +4,8 @@ use warnings;
 use Template::Declare::Tags;
 use base 'Template::Declare';
 
+our $BASE_URI = '';
+
 private template 'header' => sub {
     my ( $self, $title ) = @_;
 
@@ -12,7 +14,7 @@ private template 'header' => sub {
         link {
             attr {
                 rel   => 'stylesheet',
-                href  => '/static/css/screen.css',
+                href  => $BASE_URI.'/static/css/screen.css',
                 type  => 'text/css',
                 media => 'screen, projection'
             }
@@ -20,24 +22,24 @@ private template 'header' => sub {
         link {
             attr {
                 rel   => 'stylesheet',
-                href  => '/static/css/print.css',
+                href  => $BASE_URI.'/static/css/print.css',
                 type  => 'text/css',
                 media => 'print'
             }
         };
         outs_raw
-            '<!--[if IE]><link rel="stylesheet" href="/static/css/ie.css" type="text/css" media="screen, projection"><![endif]-->';
+            '<!--[if IE]><link rel="stylesheet" href="'.$BASE_URI.'/static/css/ie.css" type="text/css" media="screen, projection"><![endif]-->';
         link {
             attr {
                 rel  => 'icon',
-                href => '/static/images/favicon.png',
+                href => $BASE_URI.'/static/images/favicon.png',
                 type => 'image/png',
             }
         };
         link {
             attr {
                 rel   => 'search',
-                href  => '/static/xml/opensearch.xml',
+                href  => $BASE_URI.'/static/xml/opensearch.xml',
                 type  => 'application/opensearchdescription+xml',
                 title => 'minicpan search',
             }
@@ -62,7 +64,7 @@ private template 'footer' => sub {
 private template 'author_link' => sub {
     my ( $self, $author ) = @_;
     a {
-        attr { href => '/~' . lc( $author->pauseid ) . '/' };
+        attr { href => $BASE_URI.'/~' . lc( $author->pauseid ) . '/' };
         $author->name;
     };
 };
@@ -70,7 +72,7 @@ private template 'author_link' => sub {
 private template 'distribution_link' => sub {
     my ( $self, $distribution ) = @_;
     a {
-        attr {    href => '/~'
+        attr {    href => $BASE_URI.'/~'
                 . lc( $distribution->cpanid ) . '/'
                 . $distribution->distvname
                 . '/' };
@@ -82,7 +84,7 @@ private template 'package_link' => sub {
     my ( $self, $package ) = @_;
     my $distribution = $package->distribution;
     a {
-        attr {    href => '/package/'
+        attr {    href => $BASE_URI.'/package/'
                 . lc( $distribution->cpanid ) . '/'
                 . $distribution->distvname . '/'
                 . $package->package
@@ -100,8 +102,8 @@ private template distribution_file => sub {
         : $filename;
     my $href
         = ( $filename =~ /\.(pm|pod)$/ )
-        ? "/~$pauseid/$distvname/$filename"
-        : "/raw/~$pauseid/$distvname/$filename";
+        ? $BASE_URI."/~$pauseid/$distvname/$filename"
+        : $BASE_URI."/raw/~$pauseid/$distvname/$filename";
     row {
         cell {
             a {
@@ -121,11 +123,11 @@ private template 'searchbar' => sub {
     table {
         row {
             form {
-                attr { name => 'f', method => 'get', action => '/search/' };
+                attr { name => 'f', method => 'get', action => $BASE_URI.'/search/' };
                 cell {
                     attr { class => 'searchbar' };
                     outs_raw
-                        q|<a href="/"><img src="/static/images/logo.png"></a>|;
+                        q|<a href="|.$BASE_URI.q|/"><img src="|.$BASE_URI.q|/static/images/logo.png"></a>|;
                 };
                 cell {
                     attr { class => 'searchbar' };
@@ -223,7 +225,7 @@ template 'index' => sub {
                                 next unless $distvname;
                                 li {
                                     a {
-                                        attr {    href => '/~'
+                                        attr {    href => $BASE_URI.'/~'
                                                 . lc($cpanid) . '/'
                                                 . $distvname };
                                         $distvname;
@@ -420,7 +422,7 @@ private template 'dependencies' => sub {
                         my $author    = $d->cpanid;
                         li {
                             a {
-                                attr { href => "/~$author/$distvname/" };
+                                attr { href => $BASE_URI."/~$author/$distvname/" };
                                 $package;
                             };
                             if ( $deptype =~ /(.*?)_/ ) {
@@ -477,7 +479,7 @@ private template 'download' => sub {
     h2 {'Download'};
     div {
         a {
-            attr { href => '/download/~' . $author->pauseid . "/$distvname" };
+            attr { href => $BASE_URI.'/download/~' . $author->pauseid . "/$distvname" };
             $distribution->filename;
         }
     };
@@ -523,7 +525,7 @@ private template 'install' => sub {
         form {
             attr { class => 'install-link' } attr { method => 'PUT' };
             attr {
-                      action => '/install/~'
+                      action => $BASE_URI.'/install/~'
                     . lc( $distribution->cpanid ) . '/'
                     . $distribution->distvname . '/'
                     . $distribution->filename;
@@ -702,7 +704,7 @@ template 'file' => sub {
 
                     a {
                         attr {
-                            href => "/raw/~$pauseid/$distvname/$filename" };
+                            href => $BASE_URI."/raw/~$pauseid/$distvname/$filename" };
                         "See raw file";
                     };
                     if ($html) {
@@ -760,7 +762,7 @@ template 'raw' => sub {
                     div {
                         attr { class => 'download-link' };
                         a {
-                            attr {    href => '/download/~'
+                            attr {    href => $BASE_URI.'/download/~'
                                     . $author->pauseid
                                     . "/$distvname/$filename" };
                             "Download as plain text";

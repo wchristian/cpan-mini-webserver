@@ -6,7 +6,12 @@ use CPAN::Mini::Webserver;
 use Getopt::Long;
 
 my $port = 2963;
-GetOptions( "port=i" => \$port, );
+my $base_uri = '';
+GetOptions(
+    "port=i"     => \$port,
+    "base-uri=s" => \$base_uri,
+);
+$CPAN::Mini::Webserver::Templates::BASE_URI = $base_uri;
 
 my $server = CPAN::Mini::Webserver->new($port);
 $server->run();
@@ -21,6 +26,7 @@ minicpan_webserver - Search and browse Mini CPAN
 
   % minicpan_webserver
   % minicpan_webserver --port 8090
+  % minicpan_webserver --base-uri /minicpan
 
 =head1 DESCRIPTION
 
@@ -28,7 +34,8 @@ This program provides a web server that allows you to search and
 browse Mini CPAN. First you must install CPAN::Mini and create a local
 copy of CPAN using minicpan.  Then you may run minicpan_webserver and
 search and browse Mini CPAN at http://localhost:2963/. The listening
-port can be configured with C<--port> command line option.
+port can be configured with C<--port> command line option. Setting
+C<--base-uri> will make all absolute urls be prefixed with specified value.
 
 =head1 MINICPAN CONFIGURATION
 

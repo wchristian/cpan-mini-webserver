@@ -421,7 +421,7 @@ sub pod_page {
     my $d = $m->distribution;
 
     my ( $pauseid, $distvname ) = ( $d->cpanid, $d->distvname );
-    my $url = "/package/$pauseid/$distvname/$pkgname/";
+    my $url = $CPAN::Mini::Webserver::Templates::BASE_URI."/package/$pauseid/$distvname/$pkgname/";
 
     $self->redirect($url);
 }
@@ -514,7 +514,7 @@ sub download_file {
         );
         print $contents;
     } else {
-        return $self->redirect($prefix);
+        return $self->redirect($CPAN::Mini::Webserver::Templates::BASE_URI.$prefix);
     }
 }
 
@@ -584,9 +584,9 @@ sub dist_page {
     my ($dist) = $self->cgi->path_info =~ m{^/dist/(.+?)$};
     my $latest = $self->parse_cpan_packages->latest_distribution($dist);
     if ($latest) {
-        $self->redirect( "/~" . $latest->cpanid . "/" . $latest->distvname );
+        $self->redirect( $CPAN::Mini::Webserver::Templates::BASE_URI."/~" . $latest->cpanid . "/" . $latest->distvname );
     } else {
-        $self->not_found_page($dist);
+        $self->not_found_page($CPAN::Mini::Webserver::Templates::BASE_URI.$dist);
     }
 }
 
@@ -610,7 +610,7 @@ sub package_page {
         sort { length($a) <=> length($b) } @filenames;
     my $port = $self->port;
     my $host = $self->hostname;
-    my $url  = "http://$host:$port/~$pauseid/$distvname/$filename";
+    my $url  = "http://$host:$port".$CPAN::Mini::Webserver::Templates::BASE_URI."/~$pauseid/$distvname/$filename";
 
     $self->redirect($url);
 }

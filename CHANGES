@@ -1,5 +1,9 @@
 Revision history for Perl module CPAN::Mini::Webserver:
 
+0.46 Sat Jan 11 22:15:48 GMT 2011
+     - removed dependency on Perl6::Say
+     - generated internal links now have an implicit path
+
 0.45 Wed Apr  8 14:54:22 BST 2009
      - show recent changes with modern CPAN::Mini
      - auto focus search box on homepage (patch by mintywalker)

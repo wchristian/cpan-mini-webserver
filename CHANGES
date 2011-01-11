@@ -1,5 +1,8 @@
 Revision history for Perl module CPAN::Mini::Webserver:
 
+0.47 Sat Jan 11 23:00:00 GMT 2011
+     - fixed redirect urls on windows
+
 0.46 Sat Jan 11 22:15:48 GMT 2011
      - removed dependency on Perl6::Say
      - generated internal links now have an implicit path

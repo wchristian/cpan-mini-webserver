@@ -498,21 +498,18 @@ sub download_file {
     my ($distribution)
         = grep { $_->cpanid eq uc $pauseid && $_->distvname eq $distvname }
         $self->parse_cpan_packages->distributions;
-    my $prefix = file( '', 'authors', 'id', $distribution->prefix );
-    my $file = file( $self->directory, $prefix );
 
-    if ($filename) {
-        my $contents
-            = $self->get_file_from_tarball( $distribution, $filename );
-        $self->send_http_header(
-            200,
-            -content_type   => 'text/plain',
-            -content_length => length $contents,
-        );
-        print $contents;
-    } else {
-        return $self->redirect($prefix);
-    }
+    return $self->redirect( "/authors/id/" . $distribution->prefix ) if !$filename;
+
+    my $contents = $self->get_file_from_tarball( $distribution, $filename );
+    $self->send_http_header(
+        200,
+        -content_type   => 'text/plain',
+        -content_length => length $contents,
+    );
+    print $contents;
+
+    return;
 }
 
 sub raw_page {

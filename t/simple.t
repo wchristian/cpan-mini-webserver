@@ -69,7 +69,7 @@ like( $html, qr{An encoding scheme for Buffy the Vampire Slayer fans} );
 
 # Show package Acme::Buffy.pm
 redirect_ok(
-    'http://localhost:2963/~lbrocard/Acme-Buffy-1.5/Acme-Buffy-1.5/lib/Acme/Buffy.pm',
+    '/~lbrocard/Acme-Buffy-1.5/Acme-Buffy-1.5/lib/Acme/Buffy.pm',
     '/package/lbrocard/Acme-Buffy-1.5/Acme::Buffy/'
 );
 

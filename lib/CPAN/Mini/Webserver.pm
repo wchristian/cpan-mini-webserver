@@ -193,53 +193,53 @@ sub _handle_request {
     $self->distvname($distvname);
     $self->filename($filename);
 
-    # warn "$path / $raw / $download / $pauseid / $distvname / $filename";
+    return $self->dispatch( $path, $raw, $pauseid, $distvname, $filename, $install, $download, $prefix );
+}
 
-    if ( $path eq '/' ) {
-        $self->index_page();
-    } elsif ( $path eq '/search/' ) {
-        $self->search_page();
-    } elsif ( $raw && $pauseid && $distvname && $filename ) {
-        $self->raw_page();
-    } elsif ( $install && $pauseid && $distvname && $filename ) {
-        $self->install_page();
-    } elsif ( $download && $pauseid && $distvname ) {
-        $self->download_file();
-    } elsif ( $pauseid && $distvname && $filename ) {
-        $self->file_page();
-    } elsif ( $pauseid && $distvname ) {
-        $self->distribution_page();
-    } elsif ($pauseid) {
-        $self->author_page();
-    } elsif ( $path =~ m{^/perldoc} ) {
-        $self->pod_page();
-    } elsif ( $path =~ m{^/dist/} ) {
-        $self->dist_page();
-    } elsif ( $path =~ m{^/package/} ) {
-        $self->package_page();
-    } elsif ($prefix) {
-        $self->download_cpan($prefix);
-    } elsif ( $path eq '/static/css/screen.css' ) {
-        $self->direct_to_template( "css_screen", "text/css" );
-    } elsif ( $path eq '/static/css/print.css' ) {
-        $self->direct_to_template( "css_print", "text/css" );
-    } elsif ( $path eq '/static/css/ie.css' ) {
-        $self->direct_to_template( "css_ie", "text/css" );
-    } elsif ( $path eq '/static/images/logo.png' ) {
-        $self->direct_to_template( "images_logo", "image/png" );
-    } elsif ( $path eq '/static/images/favicon.png' ) {
-        $self->direct_to_template( "images_favicon", "image/png" );
-    } elsif ( $path eq '/favicon.ico' ) {
-        $self->direct_to_template( "images_favicon", "image/png" );
-    } elsif ( $path eq '/static/xml/opensearch.xml' ) {
-        $self->direct_to_template( "opensearch",
-            "application/opensearchdescription+xml",
-        );
-    } else {
-        my ($q) = $path =~ m'/(.*?)/?$';
-        $self->not_found_page($q);
-    }
+sub dispatch {
+    my ( $self, $path, $raw, $pauseid, $distvname, $filename, $install, $download, $prefix ) = @_;
 
+    return $self->index_page if $path eq '/';
+    return $self->search_page if $path eq '/search/';
+
+    return $self->dispatch_by_author_id( $distvname, $raw, $filename, $install, $download ) if $pauseid;
+
+    return $self->pod_page if $path =~ m{^/perldoc};
+    return $self->dist_page if $path =~ m{^/dist/};
+    return $self->package_page if $path =~ m{^/package/};
+
+    return $self->download_cpan( $prefix ) if $prefix;
+
+    my @template_type_info = $self->get_template_type_info( $path );
+    return $self->direct_to_template( @template_type_info ) if @template_type_info;
+
+    my ($q) = $path =~ m'/(.*?)/?$';
+    return $self->not_found_page($q);
+}
+
+sub dispatch_by_author_id {
+    my ( $self, $distvname, $raw, $filename, $install, $download ) = @_;
+
+    return $self->author_page if !$distvname;
+
+    return $self->raw_page      if $filename and $raw;
+    return $self->install_page  if $filename and $install;
+    return $self->download_file if $download;
+    return $self->file_page     if $filename;
+
+    return $self->distribution_page;
+}
+
+sub get_template_type_info {
+    my ( $self, $path ) = @_;
+    return ( "css_screen", "text/css" ) if $path eq '/static/css/screen.css';
+    return ( "css_print", "text/css" ) if $path eq '/static/css/print.css';
+    return ( "css_ie", "text/css" ) if $path eq '/static/css/ie.css';
+    return ( "images_logo", "image/png" ) if $path eq '/static/images/logo.png';
+    return ( "images_favicon", "image/png" ) if $path eq '/static/images/favicon.png';
+    return ( "images_favicon", "image/png" ) if $path eq '/favicon.ico';
+    return ( "opensearch", "application/opensearchdescription+xml" ) if $path eq '/static/xml/opensearch.xml';
+    return;
 }
 
 sub index_page {

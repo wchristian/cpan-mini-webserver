@@ -11,6 +11,7 @@ WriteMakefile(
     PREREQ_PM    => {
         'App::Cache'               => '0',
         'Archive::Peek'            => '0.33',
+        'Capture::Tiny'            => '0',
         'CGI'                      => '3.16',
         'Compress::Zlib'           => '0',
         'CPAN::Mini'               => '0.565',
@@ -19,7 +20,6 @@ WriteMakefile(
         'File::Slurp'              => '0',
         'File::Type'               => '0',
         'HTTP::Server::Simple'     => '0.34',
-        'IO::Capture::Stdout'      => '0',
         'List::MoreUtils'          => '0',
         'MIME::Base64'             => '0',
         'Module::InstalledVersion' => '0',

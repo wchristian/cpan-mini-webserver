@@ -6,13 +6,7 @@ use warnings;
 
 use Test::Builder;
 
-use IO::Capture::Stdout;
-
-sub IO::Capture::Tie_STDx::BINMODE {
-
-    # this is so we can call binmode to do utf-8 output
-    # in the real world and still use IO::Capture::Stdout here.
-}
+use Capture::Tiny 'capture';
 
 use HTTP::Response;
 use CGI;
@@ -211,13 +205,11 @@ sub make_request {
         $cgi->param( $name, $value );
     }
 
-    my $capture = IO::Capture::Stdout->new();
-    $capture->start;
-    $server->handle_request($cgi);
-    $capture->stop;
-    my $buffer = join '', $capture->read;
+    my $result = capture {
+        $server->handle_request($cgi);
+    };
 
-    my $r = HTTP::Response->parse($buffer);
+    my $r = HTTP::Response->parse($result);
     return wantarray
         ? (
         $r->code                   || "",

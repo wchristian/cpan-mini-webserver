@@ -64,11 +64,14 @@ private template 'author_link' => sub {
 
     my $author = $author_desc;
     $author = $arguments->{parse_cpan_authors}->author( $author_desc ) if !$author_desc->isa('Parse::CPAN::Authors::Author');
-    return span { $author_desc } if !$author;
+
+    my $name = my $pause_id = $author_desc;
+    $name = $author->name if $author;
+    $pause_id = $author->pauseid if $author;
 
     a {
-        attr { href => '/~' . lc( $author->pauseid ) . '/' };
-        $author->name;
+        attr { href => '/~' . lc( $pause_id ) . '/' };
+        $name;
     };
 };
 

@@ -274,6 +274,7 @@ sub index_page {
     );
 }
 
+# TODO: not tested properly
 sub not_found_page {
     my $self = shift;
     my $q    = shift;
@@ -481,9 +482,6 @@ sub file_page {
     $html =~ s/^.*<!-- start doc -->//s;
     $html =~ s/<!-- end doc -->.*$//s;
 
-#   $html
-#       =~ s/^(.*%3A%3A.*)$/my $x = $1; ($x =~ m{indexItem}) ? 1 : $x =~ s{%3A%3A}{\/}g; $x/gme;
-
     $self->send_http_header( 200, -charset => 'utf-8' );
     return Template::Declare->show(
         'file',
@@ -671,13 +669,13 @@ CPAN::Mini::Webserver - Search and browse Mini CPAN
 =head1 SYNOPSIS
 
   % minicpan_webserver
-  
+
 =head1 DESCRIPTION
 
 This module is the driver that provides a web server that allows
 you to search and browse Mini CPAN. First you must install
 CPAN::Mini and create a local copy of CPAN using minicpan.
-Then you may run minicpan_webserver and search and 
+Then you may run minicpan_webserver and search and
 browse Mini CPAN at http://localhost:2963/.
 
 You may access the Subversion repository at:
@@ -698,5 +696,5 @@ Copyright (C) 2008, Leon Brocard.
 
 =head1 LICENSE
 
-This module is free software; you can redistribute it or 
+This module is free software; you can redistribute it or
 modify it under the same terms as Perl itself.

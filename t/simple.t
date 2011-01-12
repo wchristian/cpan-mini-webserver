@@ -2,15 +2,20 @@
 use strict;
 use warnings;
 
+BEGIN {
+    use Cwd;
+    chdir '..' if getcwd =~ m@/t$@;
+    use lib 'lib';
+    use lib 't';
+}
+
 use Test::More;
-
-use FindBin;
-use lib $FindBin::Bin;
+use Compress::Zlib;
 use WebserverTester;
-
 use CPAN::Mini::Webserver;
+use File::Slurp;
 
-my $server = setup_server();
+my $server = setup_test_minicpan();
 plan tests => 47;
 
 my $name
@@ -108,3 +113,17 @@ $html = download_ok('/authors/id/L/LB/LBROCARD/CHECKSUMS');
 like( $html, qr{this PGP-signed message is also valid perl} );
 
 error404_ok('/authors/id/L/LB/LBROCARD/CHECKSUMZ');
+
+sub setup_test_minicpan {
+    $ENV{CPAN_MINI_CONFIG} = 't/mini/.minicpanrc';
+
+    for my $file (qw( t/mini/authors/01mailrc.txt t/mini/modules/02packages.details.txt )) {
+        my $gz_file = "$file.gz";
+        unlink $gz_file if -e $gz_file;
+        my $gz = Compress::Zlib::memGzip(read_file( $file, binmode => ':raw' )) or die "Cannot compress $file: $gzerrno\n";
+        write_file( $gz_file, {binmode => ':raw'}, $gz ) ;
+    }
+
+    my $server = setup_server();
+    return $server;
+}

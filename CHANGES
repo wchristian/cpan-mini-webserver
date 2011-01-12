@@ -1,5 +1,8 @@
 Revision history for Perl module CPAN::Mini::Webserver:
 
+0.48 Sat Jan 12 12:52:57 GMT 2011
+     - tests now come with their own CPAN::Mini and stay in the test dir
+
 0.47 Sat Jan 11 23:00:00 GMT 2011
      - fixed redirect urls on windows
 

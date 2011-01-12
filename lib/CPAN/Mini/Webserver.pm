@@ -22,6 +22,7 @@ use PPI;
 use PPI::HTML;
 use Safe;
 use Template::Declare;
+use Try::Tiny;
 
 Template::Declare->init(
     roots => [
@@ -157,11 +158,17 @@ sub after_setup_listener {
 
 sub handle_request {
     my ( $self, $cgi ) = @_;
-    eval { $self->_handle_request($cgi) };
-    if ($@) {
-        $self->send_http_header(500);
-        print "<h1>Internal Server Error</h1>", $cgi->escapeHTML($@);
+
+    my $result = try {
+        $self->_handle_request($cgi)
     }
+    catch {
+        $self->send_http_header(500);
+        return "<h1>Internal Server Error</h1>", $cgi->escapeHTML( $_ );
+    };
+    print $result;
+
+    return;
 }
 
 sub _handle_request {
@@ -259,7 +266,7 @@ sub index_page {
         }
     }
     $self->send_http_header( 200, -charset => 'utf-8' );
-    print Template::Declare->show(
+    return Template::Declare->show(
         'index',
         {   recents            => \@recent,
             parse_cpan_authors => $self->parse_cpan_authors,
@@ -272,7 +279,7 @@ sub not_found_page {
     my $q    = shift;
     my ( $authors, $dists, $packages ) = $self->_do_search($q);
     $self->send_http_header( 404, -charset => 'utf-8' );
-    print Template::Declare->show(
+    return Template::Declare->show(
         '404',
         {   parse_cpan_authors => $self->parse_cpan_authors,
             q                  => $q,
@@ -284,12 +291,8 @@ sub not_found_page {
 }
 
 sub redirect {
-    my $self = shift;
-    my $url  = shift;
-
-    print "HTTP/1.0 302\015\012";
-    print $self->cgi->redirect($url);
-
+    my ( $self, $url ) = @_;
+    return "HTTP/1.0 302\015\012".$self->cgi->redirect($url);
 }
 
 sub search_page {
@@ -299,7 +302,7 @@ sub search_page {
 
     my ( $authors, $dists, $packages ) = $self->_do_search($q);
     $self->send_http_header( 200, -charset => 'utf-8' );
-    print Template::Declare->show(
+    return Template::Declare->show(
         'search',
         {   parse_cpan_authors => $self->parse_cpan_authors,
             q                  => $q,
@@ -371,7 +374,7 @@ sub author_page {
     }
 
     $self->send_http_header( 200, -charset => 'utf-8' );
-    print Template::Declare->show(
+    return Template::Declare->show(
         'author',
         {   author        => $author,
             pauseid       => $pauseid,
@@ -405,7 +408,7 @@ sub distribution_page {
     my @filenames = $self->list_files($distribution);
 
     $self->send_http_header( 200, -charset => 'utf-8' );
-    print Template::Declare->show(
+    return Template::Declare->show(
         'distribution',
         {   author       => $self->parse_cpan_authors->author( uc $pauseid ),
             distribution => $distribution,
@@ -482,7 +485,7 @@ sub file_page {
 #       =~ s/^(.*%3A%3A.*)$/my $x = $1; ($x =~ m{indexItem}) ? 1 : $x =~ s{%3A%3A}{\/}g; $x/gme;
 
     $self->send_http_header( 200, -charset => 'utf-8' );
-    print Template::Declare->show(
+    return Template::Declare->show(
         'file',
         {   author       => $self->parse_cpan_authors->author( uc $pauseid ),
             distribution => $distribution,
@@ -513,9 +516,8 @@ sub download_file {
         -content_type   => 'text/plain',
         -content_length => length $contents,
     );
-    print $contents;
 
-    return;
+    return $contents;
 }
 
 sub raw_page {
@@ -564,7 +566,7 @@ sub raw_page {
     }
 
     $self->send_http_header( 200, -charset => 'utf-8' );
-    print Template::Declare->show(
+    return Template::Declare->show(
         'raw',
         {   author       => $self->parse_cpan_authors->author( uc $pauseid ),
             distribution => $distribution,
@@ -655,7 +657,7 @@ sub direct_to_template {
         ( $mime ? ( -type => $mime ) : () ),
     );
 
-    print Template::Declare->show($template);
+    return Template::Declare->show($template);
 }
 
 1;

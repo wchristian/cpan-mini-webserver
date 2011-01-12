@@ -20,6 +20,7 @@ use Pod::Simple::HTML;
 use Path::Class;
 use PPI;
 use PPI::HTML;
+use Safe;
 use Template::Declare;
 
 Template::Declare->init(
@@ -76,7 +77,7 @@ sub checksum_data_for_author {
 
     return unless -f $file;
 
-    my ( $content, $checksum );
+    my ( $content );
     {
         local $/;
         open my $fh, "$file" or die "$file: $!";
@@ -84,9 +85,10 @@ sub checksum_data_for_author {
         close $fh;
     }
 
-    eval $content;
+    my $compmt = Safe->new;
+    my $chksum = $compmt->reval( $content );
 
-    return $checksum;
+    return $chksum;
 }
 
 sub send_http_header {

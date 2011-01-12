@@ -60,7 +60,12 @@ private template 'footer' => sub {
 };
 
 private template 'author_link' => sub {
-    my ( $self, $author ) = @_;
+    my ( $self, $author_desc, $arguments ) = @_;
+
+    my $author = $author_desc;
+    $author = $arguments->{parse_cpan_authors}->author( $author_desc ) if !$author_desc->isa('Parse::CPAN::Authors::Author');
+    return span { $author_desc } if !$author;
+
     a {
         attr { href => '/~' . lc( $author->pauseid ) . '/' };
         $author->name;
@@ -148,7 +153,6 @@ private template 'searchbar' => sub {
 
 private template 'search_results' => sub {
     my ( $self, $arguments ) = @_;
-    my $parse_cpan_authors = $arguments->{parse_cpan_authors};
     my $q                  = $arguments->{q};
     my @authors            = @{ $arguments->{authors} };
     my @distributions      = @{ $arguments->{distributions} };
@@ -170,10 +174,7 @@ private template 'search_results' => sub {
                 cell {
                     show( 'distribution_link', $distribution );
                     outs ' by ';
-                    show( 'author_link',
-                        $parse_cpan_authors->author( $distribution->cpanid )
-                    );
-
+                    show( 'author_link', $distribution->cpanid, $arguments );
                 };
             };
         }
@@ -182,12 +183,7 @@ private template 'search_results' => sub {
                 cell {
                     show( 'package_link', $package );
                     outs ' by ';
-                    show(
-                        'author_link',
-                        $parse_cpan_authors->author(
-                            $package->distribution->cpanid
-                        )
-                    );
+                    show( 'author_link', $package->distribution->cpanid, $arguments );
                 };
             };
         }
@@ -199,7 +195,6 @@ private template 'search_results' => sub {
 
 template 'index' => sub {
     my ( $self, $arguments ) = @_;
-    my $parse_cpan_authors = $arguments->{parse_cpan_authors};
     my $recents            = $arguments->{recents};
 
     html {
@@ -229,12 +224,7 @@ template 'index' => sub {
                                         $distvname;
                                     };
                                     outs ' by ';
-                                    show(
-                                        'author_link',
-                                        $parse_cpan_authors->author(
-                                            $cpanid
-                                        )
-                                    );
+                                    show( 'author_link', $cpanid, $arguments );
                                 }
                             }
                         };

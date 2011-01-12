@@ -109,7 +109,8 @@ sub send_http_header {
 # this is a hook that HTTP::Server::Simple calls after setting up the
 # listening socket. we use it load the indexes
 sub after_setup_listener {
-    my $self      = shift;
+    my ( $self, $cache_dir ) = @_;
+
     my %config    = CPAN::Mini->read_config;
     my $directory = dir( glob $config{local} );
     $self->directory($directory);
@@ -121,7 +122,10 @@ sub after_setup_listener {
             && ( -d $directory )
             && ( -f $authors_filename )
             && ( -f $packages_filename );
-    my $cache = App::Cache->new( { ttl => 60 * 60 } );
+
+    my %cache_opts = (  ttl => 60 * 60  );
+    $cache_opts{directory} = $cache_dir if $cache_dir;
+    my $cache = App::Cache->new( \%cache_opts );
 
     my $whois_filename = file( $directory, 'authors', '00whois.xml' );
     my $parse_cpan_authors;

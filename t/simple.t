@@ -13,7 +13,8 @@ use Test::More;
 use Compress::Zlib;
 use WebserverTester;
 use CPAN::Mini::Webserver;
-use File::Slurp;
+use File::Slurp qw( read_file write_file );
+use File::Path 'remove_tree';
 
 my $server = setup_test_minicpan();
 plan tests => 47;
@@ -116,6 +117,7 @@ error404_ok('/authors/id/L/LB/LBROCARD/CHECKSUMZ');
 
 sub setup_test_minicpan {
     $ENV{CPAN_MINI_CONFIG} = 't/mini/.minicpanrc';
+    remove_tree( "t/mini/cache" );
 
     for my $file (qw( t/mini/authors/01mailrc.txt t/mini/modules/02packages.details.txt )) {
         my $gz_file = "$file.gz";

@@ -69,7 +69,7 @@ my $server;
 sub setup_server {
     eval {
         $server = CPAN::Mini::Webserver->new(2963);
-        $server->after_setup_listener;
+        $server->after_setup_listener( "t/mini/cache" );
     };
 
     skip_all() if $@ && $@ =~ /Please set up minicpan/;

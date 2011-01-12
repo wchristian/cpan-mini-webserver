@@ -1,5 +1,11 @@
 Revision history for Perl module CPAN::Mini::Webserver:
 
+0.50 Sat Jan 12 16:37:15 GMT 2011
+     - enabled use of the checksum files to get file dates
+     - switched out the self-built mini cpan with ANDK's
+     - handling of link generation for cpan ids with missing mail entries
+       degrades gracefully now
+
 0.49 Sat Jan 12 14:59:24 GMT 2011
      - updated manifest to include test files in dist
 

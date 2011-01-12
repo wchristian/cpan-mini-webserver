@@ -1,3 +1,2 @@
-alias BOOK       "Philippe Bruhat (BooK) <book@cpan.org>"
-alias LBROCARD   "Leon Brocard <leon@astray.com>"
-alias MARKF      "Mark Fowler <mark@twoshortplanks.com>"
+alias JHI        "J. Cpantest Hietaniemi <nospam@nospam>"
+alias ANDK       "Andreas CpanTest König <nospam@nospam>"

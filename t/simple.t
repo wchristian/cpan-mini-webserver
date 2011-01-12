@@ -21,8 +21,14 @@ plan tests => 47;
 
 my $name
     = ( $server->author_type eq 'Whois' )
-    ? "L\x{e9}on Brocard"
-    : 'Leon Brocard';
+    ? "Andreas CpanTest K"
+    : "Andreas CpanTest K"; # TODO : figure out how to deal with umlaute
+my $dist = "CPAN-Test-Dummy-Perl5-Make-1.05";
+my $cpan_id = "andk";
+my $cpan_id_upper = uc $cpan_id;
+my $cpan_id_path = "A/AN";
+my $module = "Bundle/CpanTestDummies.pm";
+my $desc = "A bundle only for testing CPAN.pm";
 
 my $html;
 
@@ -36,47 +42,48 @@ $html = html_page_ok( '/search/', q => '' );
 like( $html, qr/No results found./ );
 
 # search for buffy
-$html = html_page_ok( '/search/', q => "buffy" );
-like( $html, qr/Search for .buffy./ );
-like( $html, qr/Acme-Buffy-1.5/ );
+$html = html_page_ok( '/search/', q => "dummy" );
+like( $html, qr/Search for .dummy./ );
+like( $html, qr/$dist/ );
 like( $html, qr/$name/ );
 
 # show Leon
-$html = html_page_ok( '~lbrocard/', 'q' => undef );
+$ENV{BREAK_NOW} = 1;
+$html = html_page_ok( "~$cpan_id/", 'q' => undef );
 like( $html, qr/$name/ );
-like( $html, qr/Acme-Buffy-1.5/ );
-like( $html, qr/Tie-GHash-0.12/ );
+like( $html, qr/$dist/ );
+like( $html, qr/CPAN-Test-Dummy-Perl5-Build-1.03/ );
 
-# Show Acme-Buffy-1.5
-$html = html_page_ok('~lbrocard/Acme-Buffy-1.5/');
-like( $html, qr/$name &gt; Acme-Buffy-1.5/ );
-like( $html, qr/CHANGES/ );
-like( $html, qr/demo_buffy\.pl/ );
+# Show $dist
+$html = html_page_ok("~$cpan_id/$dist/");
+like( $html, qr/$name.* &gt; $dist/ );
+like( $html, qr/Changes/ );
+like( $html, qr/00_load\.t/ );
 
-# Show Acme-Buffy-1.5 CHANGES
-$html = html_page_ok('~lbrocard/Acme-Buffy-1.5/Acme-Buffy-1.5/CHANGES');
-like( $html, qr{$name &gt; Acme-Buffy-1.5 &gt; Acme-Buffy-1.5/CHANGES} );
-like( $html, qr/Revision history for Perl extension Buffy/ );
+# Show $dist Changes
+$html = html_page_ok("~$cpan_id/$dist/$dist/Changes");
+like( $html, qr{$name.* &gt; $dist &gt; $dist/Changes} );
+like( $html, qr/Revision history for CPAN-Test-Dummy-Perl5-Make/ );
 
-# Show Acme-Buffy-1.5 CHANGES Buffy.pm
+# Show $dist Buffy.pm
 $html = html_page_ok(
-    '~lbrocard/Acme-Buffy-1.5/Acme-Buffy-1.5/lib/Acme/Buffy.pm');
+    "~$cpan_id/$dist/$dist/lib/$module");
 like( $html,
-    qr{$name &gt; Acme-Buffy-1.5 &gt; Acme-Buffy-1.5/lib/Acme/Buffy.pm} );
-like( $html, qr{An encoding scheme for Buffy the Vampire Slayer fans} );
+    qr{$name.* &gt; $dist &gt; $dist/lib/$module} );
+like( $html, qr{$desc} );
 like( $html, qr{See raw file} );
 
-# Show Acme-Buffy-1.5 CHANGES Buffy.pm
+# Show $dist Buffy.pm
 $html = html_page_ok(
-    '/raw/~lbrocard/Acme-Buffy-1.5/Acme-Buffy-1.5/lib/Acme/Buffy.pm');
+    "/raw/~$cpan_id/$dist/$dist/lib/$module");
 like( $html,
-    qr{$name &gt; Acme-Buffy-1.5 &gt; Acme-Buffy-1.5/lib/Acme/Buffy.pm} );
-like( $html, qr{An encoding scheme for Buffy the Vampire Slayer fans} );
+    qr{$name.* &gt; $dist &gt; $dist/lib/$module} );
+like( $html, qr{$desc} );
 
 # Show package Acme::Buffy.pm
 redirect_ok(
-    '/~lbrocard/Acme-Buffy-1.5/Acme-Buffy-1.5/lib/Acme/Buffy.pm',
-    '/package/lbrocard/Acme-Buffy-1.5/Acme::Buffy/'
+    "/~$cpan_id/$dist/$dist/lib/$module",
+    "/package/$cpan_id/$dist/Bundle::CpanTestDummies/"
 );
 
 # 'static' files
@@ -93,16 +100,16 @@ error404_ok('/this/doesnt/exist');
 
 # downloads
 $html
-    = download_ok('/download/~LBROCARD/Acme-Buffy-1.5/Acme-Buffy-1.5/README');
-like( $html, qr{Copyright \(c\) 2001} );
+    = download_ok("/download/~$cpan_id_upper/$dist/$dist/README");
+like( $html, qr{This CPAN distribution file is designed for testing purposes only.} );
 
 redirect_ok(
-    '/authors/id/L/LB/LBROCARD/Acme-Buffy-1.5.tar.gz',
-    '/download/~LBROCARD/Acme-Buffy-1.5',
+    "/authors/id/$cpan_id_path/$cpan_id_upper/$dist.tar.gz",
+    "/download/~$cpan_id_upper/$dist",
 );
 
 # be like a CPAN mirror
-$html = download_gzip_ok('/authors/id/L/LB/LBROCARD/Acme-Buffy-1.5.tar.gz');
+$html = download_gzip_ok("/authors/id/$cpan_id_path/$cpan_id_upper/$dist.tar.gz");
 
 $html = download_gzip_ok('/modules/02packages.details.txt.gz');
 like( $html, qr{^\037\213} );
@@ -110,10 +117,10 @@ like( $html, qr{^\037\213} );
 $html = download_gzip_ok('/authors/01mailrc.txt.gz');
 like( $html, qr{^\037\213} );
 
-$html = download_ok('/authors/id/L/LB/LBROCARD/CHECKSUMS');
+$html = download_ok("/authors/id/$cpan_id_path/$cpan_id_upper/CHECKSUMS");
 like( $html, qr{this PGP-signed message is also valid perl} );
 
-error404_ok('/authors/id/L/LB/LBROCARD/CHECKSUMZ');
+error404_ok("/authors/id/$cpan_id_path/$cpan_id_upper/CHECKSUMZ");
 
 sub setup_test_minicpan {
     $ENV{CPAN_MINI_CONFIG} = 't/mini/.minicpanrc';

@@ -1,5 +1,8 @@
 Revision history for Perl module CPAN::Mini::Webserver:
 
+0.49 Sat Jan 12 14:59:24 GMT 2011
+     - updated manifest to include test files in dist
+
 0.48 Sat Jan 12 12:52:57 GMT 2011
      - tests now come with their own CPAN::Mini and stay in the test dir
 

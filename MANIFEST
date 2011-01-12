@@ -8,6 +8,11 @@ lib/CPAN/Mini/Webserver/Templates/Images.pm
 Makefile.PL
 MANIFEST			This list of files
 README
+t/mini/.minicpanrc
+t/mini/authors/01mailrc.txt
+t/mini/authors/id/L/LB/LBROCARD/Acme-Buffy-1.5.tar.gz
+t/mini/authors/id/L/LB/LBROCARD/CHECKSUMS
+t/mini/modules/02packages.details.txt
 t/pod.t
 t/simple.t
 t/WebserverTester.pm

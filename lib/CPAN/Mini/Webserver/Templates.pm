@@ -408,12 +408,26 @@ private template 'dependencies' => sub {
             foreach
                 my $deptype (qw(requires build_requires configure_requires))
             {
-                my $is_spec_req = $deptype =~ /(.*?)_/;
+                my ($is_spec_req) = $deptype =~ /(.*?)_/;
                 if ( defined $meta->{$deptype} ) {
                     foreach my $package ( sort keys %{ $meta->{$deptype} } ) {
                         next if $package eq 'perl';
-                        my $d = $pcp->package($package)->distribution;
-                        next unless $d;
+                        my $p = $pcp->package($package);
+                        if ( !$p ) {
+                            li {
+                                p { $package };
+                                outs " ($is_spec_req requirement)" if $is_spec_req;
+                            };
+                            next;
+                        }
+                        my $d = $p->distribution;
+                        if ( !$d ) {
+                            li {
+                                p { $package };
+                                outs " ($is_spec_req requirement)" if $is_spec_req;
+                            };
+                            next;
+                        }
                         my $distvname = $d->distvname;
                         my $author    = $d->cpanid;
                         li {

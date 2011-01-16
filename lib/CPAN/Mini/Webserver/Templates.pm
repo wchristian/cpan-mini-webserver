@@ -408,6 +408,7 @@ private template 'dependencies' => sub {
             foreach
                 my $deptype (qw(requires build_requires configure_requires))
             {
+                my $is_spec_req = $deptype =~ /(.*?)_/;
                 if ( defined $meta->{$deptype} ) {
                     foreach my $package ( sort keys %{ $meta->{$deptype} } ) {
                         next if $package eq 'perl';
@@ -420,9 +421,7 @@ private template 'dependencies' => sub {
                                 attr { href => "/~$author/$distvname/" };
                                 $package;
                             };
-                            if ( $deptype =~ /(.*?)_/ ) {
-                                outs " ($1 requirement)";
-                            }
+                            outs " ($is_spec_req requirement)" if $is_spec_req;
                         }
                     }
                 }

@@ -5,7 +5,7 @@ Things that we want to do
 
 Reload indexes if the indexes have updated
 
-Maybe use LWP::Online and gravatar? 
+Maybe use LWP::Online and gravatar?
 
 Ideas from Max Maischein:
 
@@ -51,3 +51,4 @@ machine running the webserver
 
 - Template::Toolkit instead of Template::Declare
 - CPAN::Mini::Inject compatibility
+- make code highlighting recognize variable types and variables in strings

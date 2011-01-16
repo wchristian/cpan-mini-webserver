@@ -401,48 +401,44 @@ template 'author' => sub {
 private template 'dependencies' => sub {
     my ( $self, $meta, $pcp ) = @_;
 
+    my @dep_types = qw(requires build_requires configure_requires);
+    @dep_types = grep defined $meta->{$_}, @dep_types;
+
     div {
         attr { class => 'dependencies' };
         h2 {'Dependencies'};
-        ul {
-            foreach
-                my $deptype (qw(requires build_requires configure_requires))
-            {
-                my ($is_spec_req) = $deptype =~ /(.*?)_/;
-                if ( defined $meta->{$deptype} ) {
-                    foreach my $package ( sort keys %{ $meta->{$deptype} } ) {
-                        next if $package eq 'perl';
-                        my $p = $pcp->package($package);
-                        if ( !$p ) {
-                            li {
-                                p { $package };
-                                outs " ($is_spec_req requirement)" if $is_spec_req;
-                            };
-                            next;
-                        }
-                        my $d = $p->distribution;
-                        if ( !$d ) {
-                            li {
-                                p { $package };
-                                outs " ($is_spec_req requirement)" if $is_spec_req;
-                            };
-                            next;
-                        }
-                        my $distvname = $d->distvname;
-                        my $author    = $d->cpanid;
-                        li {
-                            a {
-                                attr { href => "/~$author/$distvname/" };
-                                $package;
-                            };
-                            outs " ($is_spec_req requirement)" if $is_spec_req;
-                        }
-                    }
+        for my $deptype ( @dep_types ) {
+            my ($is_spec_req) = $deptype =~ /(.*?)_/;
+            outs "$is_spec_req requirements:" if $is_spec_req;
+            ul {
+                for my $package ( sort keys %{ $meta->{$deptype} } ) {
+                    next if $package eq 'perl';
+                    li {
+                        dep_link( $pcp, $package );
+                    };
                 }
             }
         }
     }
 };
+
+sub dep_link {
+    my ( $pcp, $package ) = @_;
+
+    my $p = $pcp->package($package);
+    return outs $package if !$p;
+
+    my $d = $p->distribution;
+    return outs $package if !$d;
+
+    my $distvname = $d->distvname;
+    my $author    = $d->cpanid;
+    a {
+        attr { href => "/~$author/$distvname/" };
+        $package;
+    };
+    return;
+}
 
 private template 'metadata' => sub {
     my ( $self, $meta ) = @_;

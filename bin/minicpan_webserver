@@ -1,6 +1,7 @@
 #!perl
 use strict;
 use warnings;
+use lib '../lib';
 use lib 'lib';
 use CPAN::Mini::Webserver;
 use Getopt::Long;
@@ -48,5 +49,5 @@ Leon Brocard <acme@astray.com>
 
 Copyright (C) 2008, Leon Brocard.
 
-This module is free software; you can redistribute it or 
+This module is free software; you can redistribute it or
 modify it under the same terms as Perl itself.

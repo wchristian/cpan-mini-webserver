@@ -49,3 +49,5 @@ reload the indexes
 - Indication if this module (and what version) is installed on the
 machine running the webserver
 
+- Template::Toolkit instead of Template::Declare
+- CPAN::Mini::Inject compatibility

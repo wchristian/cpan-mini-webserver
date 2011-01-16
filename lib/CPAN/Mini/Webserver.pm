@@ -7,7 +7,7 @@ use CPAN::Mini::Webserver::Templates;
 use CPAN::Mini::Webserver::Templates::CSS;
 use CPAN::Mini::Webserver::Templates::Images;
 use Encode;
-use File::Spec::Functions qw(canonpath);
+use File::Spec::Functions qw( canonpath catfile );
 use File::Type;
 use List::MoreUtils qw(uniq);
 use Module::InstalledVersion;
@@ -251,27 +251,30 @@ sub get_template_type_info {
 
 sub index_page {
     my $self = shift;
-
-    my $recent_filename = file( $self->directory, 'RECENT' );
-    my @recent;
-    if ( -f $recent_filename ) {
-        my $fh = IO::File->new($recent_filename) || die $!;
-        while ( my $line = <$fh> ) {
-            chomp $line;
-            next unless $line =~ m{authors/id/};
-
-            my $d = CPAN::DistnameInfo->new($line);
-
-            push @recent, $d;
-        }
-    }
     $self->send_http_header( 200, -charset => 'utf-8' );
     return Template::Declare->show(
         'index',
-        {   recents            => \@recent,
+        {   recents            => $self->get_recent_dists,
             parse_cpan_authors => $self->parse_cpan_authors,
         }
     );
+}
+
+sub get_recent_dists {
+    my ( $self ) = @_;
+
+    my $recent_filename = catfile( $self->directory, 'RECENT' );
+    return { count => 0 } if !-f $recent_filename;
+
+    my $fh = IO::File->new($recent_filename) || die $!;
+    my @recent = <$fh>;
+    @recent = grep m{authors/id/}, @recent;
+
+    my $recent_count = @recent;
+    @recent = @recent[0..19] if $recent_count > 20;
+    @recent = map CPAN::DistnameInfo->new( $_ ), @recent;
+
+    return { count => $recent_count, display_list => \@recent };
 }
 
 # TODO: not tested properly

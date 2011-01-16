@@ -212,10 +212,10 @@ template 'index' => sub {
                     show('searchbar');
                     h1 {'Index'};
                     p {'Welcome to CPAN::Mini::Webserver. Start searching!'};
-                    if ($recents) {
+                    if ($recents->{count}) {
                         h2 {'Recent distributions'};
                         ul {
-                            foreach my $recent (@$recents) {
+                            foreach my $recent (@{$recents->{display_list}}) {
                                 my $cpanid    = $recent->cpanid;
                                 my $distvname = $recent->distvname;
                                 next unless $distvname;
@@ -231,6 +231,10 @@ template 'index' => sub {
                                 }
                             }
                         };
+                        p{
+                            attr { class => 'small' };
+                            "(And " . ($recents->{count} - @{$recents->{display_list}} . " more.)");
+                        } if $recents->{count} > 20;
                     }
                 };
                 show('footer');
@@ -789,7 +793,7 @@ CPAN::Mini::Webserver::Templates - Templates for CPAN::Mini::Webserver
 
 =head1 DESCRIPTION
 
-This module holds the templates, CSS and images for 
+This module holds the templates, CSS and images for
 CPAN::Mini::Webserver.
 
 =head1 AUTHOR
@@ -800,5 +804,5 @@ Leon Brocard <acme@astray.com>
 
 Copyright (C) 2008, Leon Brocard.
 
-This module is free software; you can redistribute it or 
+This module is free software; you can redistribute it or
 modify it under the same terms as Perl itself.

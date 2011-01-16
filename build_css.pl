@@ -14,13 +14,13 @@ foreach my $filename ( File::Find::Rule->new->file->in('root/static/css') ) {
     unlink($filename) || die $!;
 }
 
-my $settings = 'blueprint_0.7.1/lib/settings.yml';
+my $settings = 'blueprint/lib/settings.yml';
 my $conf     = LoadFile($settings);
 $conf->{cpanminiwebserver}->{path} = cwd . '/root/static/css/';
 DumpFile( $settings, $conf );
 use YAML;
 
-system "cd blueprint_0.7.1/lib && ruby compress.rb -p cpanminiwebserver";
+system "cd blueprint/lib && ruby compress.rb -p cpanminiwebserver";
 
 die "CSS files not generated" unless -f 'root/static/css/screen.css';
 

@@ -1,5 +1,27 @@
 Revision history for Perl module CPAN::Mini::Webserver:
 
+0.51 Sat Jan 12 16:42:55 GMT 2011
+     [ ENHANCEMENTS]
+     - the display of recently added dists on the frontpage is now limited
+       to 20 entries
+     - changed the formatting of the depencency list on dist pages to be
+       more readable
+     - updated the stylesheet to the latest version
+
+     [ BUGFIXES]
+     - the server does not crash anymore while loading a dist that has
+       dependencies that are unknown to the server
+     - selecting the target for a package page is now a bit less naive so
+       duplicate files don't cause wrong pages to be loaded. RT 44196
+
+     [ CHANGES ]
+     - using Capture::Tiny now instead of IO::Capture
+
+     [ GENERAL CLEANUP ]
+     - Perl::Tidy and various git preparations applied
+     - some refactorings to a more MVC-like structure and to remove some
+       performance-problematic algorithms
+
 0.50 Sat Jan 12 16:37:15 GMT 2011
      - enabled use of the checksum files to get file dates
      - switched out the self-built mini cpan with ANDK's

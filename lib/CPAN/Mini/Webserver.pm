@@ -571,16 +571,18 @@ sub package_page {
     my $distribution = $p->distribution;
     my @filenames    = $self->list_files( $distribution );
     my $package_file = $package_name;
-    $package_file =~ s{::}{}g;
+    $package_file =~ s{::}{/}g;
     $package_file .= '.pm';
     my ( $filename ) = grep { $_ =~ /$package_file/ } sort { length( $a ) <=> length( $b ) } @filenames;
     my $url = "/~$pauseid/$distvname/$filename";
+
+    # TODO: duplicate results and no results here need to be handled (maybe search through contents of a dist in that case)
 
     $self->redirect( $url );
 }
 
 sub is_package_for_package_page {
-    my ( $pauseid, $distvname, $package_name, $package ) = @_;
+    my ( $self, $pauseid, $distvname, $package_name, $package ) = @_;
 
     return 0 if $package->package                 ne $package_name;
     return 0 if $package->distribution->distvname ne $distvname;

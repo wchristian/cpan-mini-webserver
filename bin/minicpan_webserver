@@ -41,6 +41,10 @@ following line in your .minicpanrc:
 
   also_mirror: authors/00whois.xml
 
+=head1 CURRENT MAINTAINER
+
+Christian Walde <walde.christian@googlemail.com>
+
 =head1 AUTHOR
 
 Leon Brocard <acme@astray.com>

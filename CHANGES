@@ -41,11 +41,11 @@ Revision history for Perl module CPAN::Mini::Webserver:
 
 0.41 Thu Aug 28 15:39:02 BST 2008
      - drop the header font size a little
-     - refactored out a bunch of methods, turned into calls to 
+     - refactored out a bunch of methods, turned into calls to
        direct_to_template (patch by markf)
      - remove useless commented out code (patch by markf)
      - correct out of date comment (patch by markf)
-     - refactored the skipping into the WebserverTester, avoided 
+     - refactored the skipping into the WebserverTester, avoided
        starting the webserver twice in simple.t, made simple.t
        ascii not utf8 (patch by markf)
      - view anything.PL as raw. This is because we want Makefile.PL
@@ -53,7 +53,7 @@ Revision history for Perl module CPAN::Mini::Webserver:
        by markf)
      - unbreak bonjour publishing (patch by miyagawa)
      - move the archive code into Archive::Peek and require it, with
-       the bonus of being able to explore distributions which are 
+       the bonus of being able to explore distributions which are
        packaged as .zip files
 
 0.40 Fri Aug 22 09:24:54 BST 2008
@@ -62,7 +62,7 @@ Revision history for Perl module CPAN::Mini::Webserver:
      - index CamelCase distributions and modules so that you can
        search for both "camel", "case" and "camelcase"
      - use PAUSE names if 00whois.xml is mirrored (patch by martijn)
-     - add info like email/homepage and some links to other 
+     - add info like email/homepage and some links to other
        cpan-related pages for the author (patch by martijn)
      - make an empty search give "No results found", rather than
        an error (noticed by corion)
@@ -77,7 +77,7 @@ Revision history for Perl module CPAN::Mini::Webserver:
      - sort dependencies
      - narrow down the search results based on educated guesses based
        on the search query (patch by martijn)
-     - use Archive::Tar if installed, otherwise external tar 
+     - use Archive::Tar if installed, otherwise external tar
        (patch by corion)
      - display the installed version of a distribution (patch by
        corion)
@@ -85,12 +85,12 @@ Revision history for Perl module CPAN::Mini::Webserver:
      - make /dist/Some-Distname work and extract redirect and 404
        support into their own methods (patch by jesse)
      - a more CPAN::Mini::Webserver specific banner at startup
-       (patch by jesse)  
-     - extract the code used to render an item in the distro list 
+       (patch by jesse)
+     - extract the code used to render an item in the distro list
        and remove redundant filename prefix (patch by jesse)
      - require Parse::CPAN::Packages 2.28 to reduce warnings (patch
        by tokuhirom)
-     - take 'use CPAN::Mini::Webserver' out of eval() so the 
+     - take 'use CPAN::Mini::Webserver' out of eval() so the
        compliation failure is more obvious and doesn't cause issues
        (patch by miyagawa)
      - add links to cpantesters, cpanforum, cpanratings and RT
@@ -105,7 +105,7 @@ Revision history for Perl module CPAN::Mini::Webserver:
 
 0.37 Fri Aug 15 09:37:46 CEST 2008
      - show metadata on distribution pages (patch by martijn)
-     - port can now be configured with --port command line option 
+     - port can now be configured with --port command line option
        (thanks to tokuhirom, miyagawa, martijn)
      - does Bonjour publishing if HTTP::Server::Simple::Bonjour is
        installed (miyagawa)
@@ -141,8 +141,8 @@ Revision history for Perl module CPAN::Mini::Webserver:
 0.33 Fri Aug  8 08:00:12 BST 2008
      - require at least CPAN::Mini 0.565 as we need CPAN::Mini::App
        (noticed by bricas)
-     - glob the local directory name (like CPAN::Mini does) to make 
-       ~/my-little-cpan work (patch by Andy Armstrong) 
+     - glob the local directory name (like CPAN::Mini does) to make
+       ~/my-little-cpan work (patch by Andy Armstrong)
 
 0.32 Sat Aug  2 19:27:12 BST 2008
      - initial release

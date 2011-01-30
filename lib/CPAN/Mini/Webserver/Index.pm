@@ -10,7 +10,7 @@ has 'index' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
 sub add {
     my ( $self, $key, $words ) = @_;
     my $index = $self->index;
-    foreach my $word (@$words) {
+    foreach my $word ( @$words ) {
         push @{ $index->{$word} }, $key;
     }
 }
@@ -30,7 +30,7 @@ sub create_index {
             push @words, $word;
             push @words, wordsplit $word;
         }
-        @words = map {lc} uniq @words;
+        @words = map { lc } uniq @words;
 
         $self->add( $distribution, \@words );
     }
@@ -41,7 +41,7 @@ sub create_index {
             push @words, $word;
             push @words, wordsplit $word;
         }
-        @words = map {lc} uniq @words;
+        @words = map { lc } uniq @words;
         $self->add( $package, \@words );
     }
 
@@ -54,7 +54,7 @@ sub search {
 
     my $qp = Search::QueryParser->new( rxField => qr/NOTAFIELD/, );
     my $query = $qp->parse( $q, 1 );
-    unless ($query) {
+    unless ( $query ) {
 
         # warn "Error in query : " . $qp->err;
         return;
@@ -63,13 +63,14 @@ sub search {
     foreach my $part ( @{ $query->{'+'} } ) {
         my $value = $part->{value};
         my @words = split /(?:\:\:| |-)/, unidecode lc $value;
-        foreach my $word (@words) {
+        foreach my $word ( @words ) {
             my @word_results = @{ $index->{$word} || [] };
-            if (@results) {
+            if ( @results ) {
                 my %seen;
                 $seen{$_} = 1 foreach @word_results;
                 @results = grep { $seen{$_} } @results;
-            } else {
+            }
+            else {
                 @results = @word_results;
             }
         }
@@ -77,7 +78,7 @@ sub search {
 
     foreach my $part ( @{ $query->{'-'} } ) {
         my $value        = $part->{value};
-        my @word_results = $self->search_word($value);
+        my @word_results = $self->search_word( $value );
         my %seen;
         $seen{$_} = 1 foreach @word_results;
         @results = grep { !$seen{$_} } @results;
@@ -91,7 +92,7 @@ sub search_word {
     my $index = $self->index;
     my @results;
     my @words = split /(?:\:\:| |-)/, unidecode lc $word;
-    foreach my $word (@words) {
+    foreach my $word ( @words ) {
         next unless exists $index->{$word};
         push @results, @{ $index->{$word} };
     }

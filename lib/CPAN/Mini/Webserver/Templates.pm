@@ -8,7 +8,7 @@ private template 'header' => sub {
     my ( $self, $title ) = @_;
 
     head {
-        title {$title};
+        title { $title };
         link {
             attr {
                 rel   => 'stylesheet',
@@ -25,8 +25,7 @@ private template 'header' => sub {
                 media => 'print'
             }
         };
-        outs_raw
-            '<!--[if IE]><link rel="stylesheet" href="/static/css/ie.css" type="text/css" media="screen, projection"><![endif]-->';
+        outs_raw '<!--[if IE]><link rel="stylesheet" href="/static/css/ie.css" type="text/css" media="screen, projection"><![endif]-->';
         link {
             attr {
                 rel  => 'icon',
@@ -63,10 +62,10 @@ private template 'author_link' => sub {
     my ( $self, $author_desc, $arguments ) = @_;
 
     my $author = $author_desc;
-    $author = $arguments->{parse_cpan_authors}->author( $author_desc ) if !$author_desc->isa('Parse::CPAN::Authors::Author');
+    $author = $arguments->{parse_cpan_authors}->author( $author_desc ) if !$author_desc->isa( 'Parse::CPAN::Authors::Author' );
 
     my $name = my $pause_id = $author_desc;
-    $name = $author->name if $author;
+    $name     = $author->name    if $author;
     $pause_id = $author->pauseid if $author;
 
     a {
@@ -78,10 +77,7 @@ private template 'author_link' => sub {
 private template 'distribution_link' => sub {
     my ( $self, $distribution ) = @_;
     a {
-        attr {    href => '/~'
-                . lc( $distribution->cpanid ) . '/'
-                . $distribution->distvname
-                . '/' };
+        attr { href => '/~' . lc( $distribution->cpanid ) . '/' . $distribution->distvname . '/' };
         $distribution->distvname;
     };
 };
@@ -90,26 +86,22 @@ private template 'package_link' => sub {
     my ( $self, $package ) = @_;
     my $distribution = $package->distribution;
     a {
-        attr {    href => '/package/'
-                . lc( $distribution->cpanid ) . '/'
-                . $distribution->distvname . '/'
-                . $package->package
-                . '/' };
+        attr { href => '/package/' . lc( $distribution->cpanid ) . '/' . $distribution->distvname . '/' . $package->package . '/' };
         $package->package;
     };
 };
 
 private template distribution_file => sub {
-    my ( $self, $pauseid, $distvname, $filename ) = (@_);
+    my ( $self, $pauseid, $distvname, $filename ) = ( @_ );
 
-    my $display_filename
-        = ( $filename =~ /^$distvname\/(.*)$/ )
-        ? $1
-        : $filename;
-    my $href
-        = ( $filename =~ /\.(pm|pod)$/ )
-        ? "/~$pauseid/$distvname/$filename"
-        : "/raw/~$pauseid/$distvname/$filename";
+    my $display_filename =
+      ( $filename =~ /^$distvname\/(.*)$/ )
+      ? $1
+      : $filename;
+    my $href =
+      ( $filename =~ /\.(pm|pod)$/ )
+      ? "/~$pauseid/$distvname/$filename"
+      : "/raw/~$pauseid/$distvname/$filename";
     row {
         cell {
             a {
@@ -132,8 +124,7 @@ private template 'searchbar' => sub {
                 attr { name => 'f', method => 'get', action => '/search/' };
                 cell {
                     attr { class => 'searchbar' };
-                    outs_raw
-                        q|<a href="/"><img src="/static/images/logo.png"></a>|;
+                    outs_raw q|<a href="/"><img src="/static/images/logo.png"></a>|;
                 };
                 cell {
                     attr { class => 'searchbar' };
@@ -145,7 +136,7 @@ private template 'searchbar' => sub {
                             attr {
                                 type  => 'submit',
                                 value => 'Search Mini CPAN'
-                                }
+                              }
                         };
                     };
                 };
@@ -156,13 +147,13 @@ private template 'searchbar' => sub {
 
 private template 'search_results' => sub {
     my ( $self, $arguments ) = @_;
-    my $q                  = $arguments->{q};
-    my @authors            = @{ $arguments->{authors} };
-    my @distributions      = @{ $arguments->{distributions} };
-    my @packages           = @{ $arguments->{packages} };
+    my $q             = $arguments->{q};
+    my @authors       = @{ $arguments->{authors} };
+    my @distributions = @{ $arguments->{distributions} };
+    my @packages      = @{ $arguments->{packages} };
     if ( @authors + @distributions + @packages ) {
         outs_raw '<table>';
-        foreach my $author (@authors) {
+        foreach my $author ( @authors ) {
 
             row {
                 cell {
@@ -172,7 +163,7 @@ private template 'search_results' => sub {
             };
         }
 
-        foreach my $distribution (@distributions) {
+        foreach my $distribution ( @distributions ) {
             row {
                 cell {
                     show( 'distribution_link', $distribution );
@@ -181,7 +172,7 @@ private template 'search_results' => sub {
                 };
             };
         }
-        foreach my $package (@packages) {
+        foreach my $package ( @packages ) {
             row {
                 cell {
                     show( 'package_link', $package );
@@ -191,14 +182,15 @@ private template 'search_results' => sub {
             };
         }
         outs_raw '</table>';
-    } else {
-        p {'No results found.'};
+    }
+    else {
+        p { 'No results found.' };
     }
 };
 
 template 'index' => sub {
     my ( $self, $arguments ) = @_;
-    my $recents            = $arguments->{recents};
+    my $recents = $arguments->{recents};
 
     html {
         attr { xmlns => 'http://www.w3.org/1999/xhtml' };
@@ -209,21 +201,19 @@ template 'index' => sub {
                 show( 'header', 'Index' );
                 body {
                     attr { onload => 'document.f.q.focus()' };
-                    show('searchbar');
-                    h1 {'Index'};
-                    p {'Welcome to CPAN::Mini::Webserver. Start searching!'};
-                    if ($recents->{count}) {
-                        h2 {'Recent distributions'};
+                    show( 'searchbar' );
+                    h1 { 'Index' };
+                    p { 'Welcome to CPAN::Mini::Webserver. Start searching!' };
+                    if ( $recents->{count} ) {
+                        h2 { 'Recent distributions' };
                         ul {
-                            foreach my $recent (@{$recents->{display_list}}) {
+                            foreach my $recent ( @{ $recents->{display_list} } ) {
                                 my $cpanid    = $recent->cpanid;
                                 my $distvname = $recent->distvname;
                                 next unless $distvname;
                                 li {
                                     a {
-                                        attr {    href => '/~'
-                                                . lc($cpanid) . '/'
-                                                . $distvname };
+                                        attr { href => '/~' . lc( $cpanid ) . '/' . $distvname };
                                         $distvname;
                                     };
                                     outs ' by ';
@@ -231,13 +221,14 @@ template 'index' => sub {
                                 }
                             }
                         };
-                        p{
+                        p {
                             attr { class => 'small' };
-                            "(And " . ($recents->{count} - @{$recents->{display_list}} . " more.)");
-                        } if $recents->{count} > 20;
+                            "(And " . ( $recents->{count} - @{ $recents->{display_list} } . " more.)" );
+                        }
+                        if $recents->{count} > 20;
                     }
                 };
-                show('footer');
+                show( 'footer' );
             };
         };
     };
@@ -255,7 +246,7 @@ template '404' => sub {
                 show( 'header', 'File not found' );
                 body {
                     show( 'searchbar', $q );
-                    h1 {'Sorry. I couldn\'t find the page you wanted.'};
+                    h1 { 'Sorry. I couldn\'t find the page you wanted.' };
                     p {
                         "Unfortunately, the page you were looking for doesn't exist. Perhaps a quick search for $q will turn up what you were looking for:";
                     };
@@ -267,7 +258,7 @@ template '404' => sub {
                     outs_raw '&#148;';
                 };
                 show( 'search_results', $arguments );
-                show('footer');
+                show( 'footer' );
             };
         };
     };
@@ -291,7 +282,7 @@ template 'search' => sub {
                         outs_raw '&#148;';
                     };
                     show( 'search_results', $arguments );
-                    show('footer');
+                    show( 'footer' );
                 }
             };
         }
@@ -303,14 +294,10 @@ private template 'authorinfo' => sub {
 
     my $pauseid = $author->pauseid;
     my $email   = $author->email;
-    my $url     = $author->can('homepage') ? $author->homepage : undef;
-    my $prefix
-        = 'id' . '/'
-        . substr( $pauseid, 0, 1 ) . '/'
-        . substr( $pauseid, 0, 2 ) . '/'
-        . $pauseid;
+    my $url     = $author->can( 'homepage' ) ? $author->homepage : undef;
+    my $prefix  = 'id' . '/' . substr( $pauseid, 0, 1 ) . '/' . substr( $pauseid, 0, 2 ) . '/' . $pauseid;
 
-    h2 {"Links"};
+    h2 { "Links" };
     ul {
         li {
             a {
@@ -332,16 +319,13 @@ private template 'authorinfo' => sub {
         }
         li {
             a {
-                attr { href =>
-                        "http://cpantesters.perl.org/author/$pauseid.html" };
+                attr { href => "http://cpantesters.perl.org/author/$pauseid.html" };
                 'CPANTesters';
             };
         }
         li {
             a {
-                attr { href =>
-                        "http://bbbike.radzeit.de/~slaven/cpantestersmatrix.cgi?author=$pauseid"
-                };
+                attr { href => "http://bbbike.radzeit.de/~slaven/cpantestersmatrix.cgi?author=$pauseid" };
                 'Test Matrix';
             };
         }
@@ -363,13 +347,13 @@ template 'author' => sub {
                 attr { class => 'container' };
                 div {
                     attr { class => 'span-24 last' };
-                    show('searchbar');
+                    show( 'searchbar' );
                     h1 { show( 'author_link', $author ) };
                 }
                 div {
                     attr { class => 'span-18 last' };
                     outs_raw '<table>';
-                    foreach my $distribution (@distributions) {
+                    foreach my $distribution ( @distributions ) {
                         row {
                             cell {
                                 show( 'distribution_link', $distribution );
@@ -389,7 +373,7 @@ template 'author' => sub {
 
                 div {
                     attr { class => 'span-24 last' };
-                    show('footer');
+                    show( 'footer' );
                 };
 
             };
@@ -406,9 +390,9 @@ private template 'dependencies' => sub {
 
     div {
         attr { class => 'dependencies' };
-        h2 {'Dependencies'};
+        h2 { 'Dependencies' };
         for my $deptype ( @dep_types ) {
-            my ($is_spec_req) = $deptype =~ /(.*?)_/;
+            my ( $is_spec_req ) = $deptype =~ /(.*?)_/;
             outs "$is_spec_req requirements:" if $is_spec_req;
             ul {
                 for my $package ( sort keys %{ $meta->{$deptype} } ) {
@@ -425,7 +409,7 @@ private template 'dependencies' => sub {
 sub dep_link {
     my ( $pcp, $package ) = @_;
 
-    my $p = $pcp->package($package);
+    my $p = $pcp->package( $package );
     return outs $package if !$p;
 
     my $d = $p->distribution;
@@ -443,22 +427,20 @@ sub dep_link {
 private template 'metadata' => sub {
     my ( $self, $meta ) = @_;
 
-    h2 {'Metadata'};
+    h2 { 'Metadata' };
     div {
         attr { class => 'metadata' };
         dl {
-            foreach
-                my $key ( qw(abstract license repository), 'release date' )
-            {
+            foreach my $key ( qw(abstract license repository), 'release date' ) {
                 if ( defined $meta->{$key} ) {
                     dt { ucfirst $key; };
                     if ( defined $meta->{resources}->{$key} ) {
                         a {
-                            attr {
-                                href => delete $meta->{resources}->{$key} };
+                            attr { href => delete $meta->{resources}->{$key} };
                             $meta->{$key};
                         };
-                    } else {
+                    }
+                    else {
                         dd { $meta->{$key} };
                     }
                 }
@@ -480,7 +462,7 @@ private template 'metadata' => sub {
 private template 'download' => sub {
     my ( $self, $author, $distribution ) = @_;
     my $distvname = $distribution->distvname;
-    h2 {'Download'};
+    h2 { 'Download' };
     div {
         a {
             attr { href => '/download/~' . $author->pauseid . "/$distvname" };
@@ -502,39 +484,35 @@ private template 'install' => sub {
         $_ = $1;
         s!/!::!g;
         $_
-        } grep {
-        m![^/]*/lib/.*?\.pm$!
-        } @{$filenames};
+    } grep { m![^/]*/lib/.*?\.pm$! } @{$filenames};
 
     my $installed_version = Module::InstalledVersion->new( $modules[0] );
 
     my $msg    = "Not installed on this Perl";
     my $action = 'Install';
     if ( $installed_version->{version} ) {
-        $msg = sprintf 'You have version %s installed.',
-            $installed_version->{version};
+        $msg = sprintf 'You have version %s installed.', $installed_version->{version};
         if ( $installed_version->{version} lt $distribution->version ) {
             $action = 'Update';
-        } elsif ( $installed_version->{version} eq $distribution->version ) {
+        }
+        elsif ( $installed_version->{version} eq $distribution->version ) {
             $action = 'Reinstall';
-        } else {
+        }
+        else {
             $action = 'Downgrade';
         }
     }
 
-    h2 {'Install'};
+    h2 { 'Install' };
     div {
         attr { class => 'install' };
         div { attr { 'class' => "install-message" }; $msg };
         form {
             attr { class => 'install-link' } attr { method => 'PUT' };
             attr {
-                      action => '/install/~'
-                    . lc( $distribution->cpanid ) . '/'
-                    . $distribution->distvname . '/'
-                    . $distribution->filename;
+                action => '/install/~' . lc( $distribution->cpanid ) . '/' . $distribution->distvname . '/' . $distribution->filename;
             };
-            button {$action} $action;
+            button { $action } $action;
         };
     };
 };
@@ -543,28 +521,23 @@ private template 'dist_links' => sub {
     my ( $self, $distribution ) = @_;
     my $distname = $distribution->dist;
 
-    h2 {'Links'};
+    h2 { 'Links' };
     ul {
         li {
             outs "Test ";
             a {
-                attr { href =>
-                        "http://bbbike.radzeit.de/~slaven/cpantestersmatrix.cgi?dist=$distname"
-                };
+                attr { href => "http://bbbike.radzeit.de/~slaven/cpantestersmatrix.cgi?dist=$distname" };
                 "matrix";
             };
             outs " and ";
             a {
-                attr { href =>
-                        "http://cpantesters.perl.org/show/$distname.html" };
+                attr { href => "http://cpantesters.perl.org/show/$distname.html" };
                 "reports";
             };
         }
         li {
             a {
-                attr { href =>
-                        "http://rt.cpan.org/NoAuth/Bugs.html?Dist=$distname"
-                };
+                attr { href => "http://rt.cpan.org/NoAuth/Bugs.html?Dist=$distname" };
                 "RT";
             };
             outs " (or via ";
@@ -590,9 +563,9 @@ private template 'dist_links' => sub {
 
 template 'filelist' => sub {
     my ( $self, $pauseid, $distvname, $label, $filenames ) = @_;
-    h2 {$label};
+    h2 { $label };
     outs_raw '<table>';
-    foreach my $filename (@$filenames) {
+    foreach my $filename ( @$filenames ) {
         show(
             distribution_file => $pauseid,
             $distvname, $filename
@@ -617,7 +590,7 @@ template 'distribution' => sub {
                 attr { class => 'container' };
                 div {
                     attr { class => 'span-24 last' };
-                    show('searchbar');
+                    show( 'searchbar' );
                     h1 {
                         show( 'author_link', $author );
                         outs ' > ';
@@ -629,46 +602,48 @@ template 'distribution' => sub {
 
                     #                    outs_raw '<table>';
                     my ( @code, @test, @other, @doc );
-                    foreach (@filenames) {
+                    foreach ( @filenames ) {
                         if ( m{(?:/bin/|\.p(?:m|l)$)} and not m{/inc/} ) {
                             push @code, $_;
-                        } elsif (m{\.pod$}) {
+                        }
+                        elsif ( m{\.pod$} ) {
                             push @doc, $_;
-                        } elsif (/\.t$/) {
+                        }
+                        elsif ( /\.t$/ ) {
                             push @test, $_;
-                        } else {
+                        }
+                        else {
                             push @other, $_;
                         }
                     }
                     show( 'filelist', $pauseid, $distvname, 'Code', \@code )
-                        if @code;
-                    show( 'filelist', $pauseid, $distvname, 'Documentation',
-                        \@doc )
-                        if @doc;
+                      if @code;
+                    show( 'filelist', $pauseid, $distvname, 'Documentation', \@doc )
+                      if @doc;
                     show( 'filelist', $pauseid, $distvname, 'Tests', \@test )
-                        if @test;
+                      if @test;
                     show( 'filelist', $pauseid, $distvname, 'Other', \@other )
-                        if @other;
+                      if @other;
 
-                   #                    foreach my $filename (@filenames) {
-                   #                        show(
-                   #                            distribution_file => $pauseid,
-                   #                            $distvname, $filename
-                   #                        );
-                   #                    }
-                   #                    outs_raw '</table>';
+                    #                    foreach my $filename (@filenames) {
+                    #                        show(
+                    #                            distribution_file => $pauseid,
+                    #                            $distvname, $filename
+                    #                        );
+                    #                    }
+                    #                    outs_raw '</table>';
                 };
                 div {
                     attr { class => 'span-6 last' };
                     show( 'metadata',     $meta );
                     show( 'dependencies', $meta, $pcp );
                     show( 'download',     $author, $distribution );
-                    show( 'install',    $author, $distribution, \@filenames );
-                    show( 'dist_links', $distribution );
+                    show( 'install',      $author, $distribution, \@filenames );
+                    show( 'dist_links',   $distribution );
                 };
                 div {
                     attr { class => 'span-24 last' };
-                    show('footer');
+                    show( 'footer' );
                 };
 
             }
@@ -690,14 +665,13 @@ template 'file' => sub {
     my $contents = $arguments->{contents};
     my $html     = $arguments->{html};
     html {
-        show( 'header',
-            $author->name . ' > ' . $distvname . ' > ' . $filename );
+        show( 'header', $author->name . ' > ' . $distvname . ' > ' . $filename );
         body {
             div {
                 attr { class => 'container' };
                 div {
                     attr { class => 'span-24' };
-                    show('searchbar');
+                    show( 'searchbar' );
                     h1 {
                         show( 'author_link', $author );
                         outs ' > ';
@@ -707,19 +681,19 @@ template 'file' => sub {
                     };
 
                     a {
-                        attr {
-                            href => "/raw/~$pauseid/$distvname/$filename" };
+                        attr { href => "/raw/~$pauseid/$distvname/$filename" };
                         "See raw file";
                     };
-                    if ($html) {
+                    if ( $html ) {
                         div {
                             attr { id => "pod" };
                             outs_raw $html;
                         };
-                    } else {
-                        pre {$contents};
                     }
-                    show('footer');
+                    else {
+                        pre { $contents };
+                    }
+                    show( 'footer' );
                 };
 
             };
@@ -738,14 +712,13 @@ template 'raw' => sub {
     my $contents     = $arguments->{contents};
     my $html         = $arguments->{html};
     html {
-        show( 'header',
-            $author->name . ' > ' . $distvname . ' > ' . $filename );
+        show( 'header', $author->name . ' > ' . $distvname . ' > ' . $filename );
         body {
             div {
                 attr { class => 'container' };
                 div {
                     attr { class => 'span-24' };
-                    show('searchbar');
+                    show( 'searchbar' );
                     h1 {
                         show( 'author_link', $author );
                         outs ' > ';
@@ -753,26 +726,25 @@ template 'raw' => sub {
                         outs ' > ';
                         outs $filename;
                     };
-                    if ($html) {
+                    if ( $html ) {
                         div {
                             attr { id => "code" };
                             code {
                                 outs_raw $html;
                             };
                         };
-                    } else {
-                        pre {$contents};
+                    }
+                    else {
+                        pre { $contents };
                     }
                     div {
                         attr { class => 'download-link' };
                         a {
-                            attr {    href => '/download/~'
-                                    . $author->pauseid
-                                    . "/$distvname/$filename" };
+                            attr { href => '/download/~' . $author->pauseid . "/$distvname/$filename" };
                             "Download as plain text";
                         };
                     };
-                    show('footer');
+                    show( 'footer' );
                 };
 
             };

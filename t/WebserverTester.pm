@@ -54,15 +54,14 @@ my $server;
     }
 
     sub skip_all() {
-        $Tester->plan( skip_all =>
-                "CPAN::Mini mirror must be installed for testing: $@" );
+        $Tester->plan( skip_all => "CPAN::Mini mirror must be installed for testing: $@" );
         exit;
     }
 }
 
 sub setup_server {
     eval {
-        $server = CPAN::Mini::Webserver->new(2963);
+        $server = CPAN::Mini::Webserver->new( 2963 );
         $server->after_setup_listener( "t/mini/cache" );
     };
 
@@ -81,8 +80,8 @@ sub html_page_ok {
     return unless is_num $code, 200,            "when checking status";
     return unless like $mime,   qr{^text/html}, "when checking html mimetype";
     return
-        unless like $content, qr/<html/,
-        "when checking page had a html tag in it";
+      unless like $content, qr/<html/,
+      "when checking page had a html tag in it";
     ok;
 
     return $content;
@@ -125,8 +124,8 @@ sub opensearch_ok {
     local $Test::name = "opensearch from '$path'";
     return unless is_num $code, 200, "when checking status";
     return
-        unless like $mime, qr{^application/opensearchdescription},
-        "when checking opensearch mimetype";
+      unless like $mime, qr{^application/opensearchdescription},
+      "when checking opensearch mimetype";
     return unless like $content, qr/<\?xml/, "when checking for an xml tag";
     ok;
 
@@ -142,12 +141,12 @@ sub redirect_ok {
     local $Test::name = "redirect from '$path'";
     return unless is_num $code, 302, "when checking status";
     return
-        unless is_eq $response->header("Status"), "302 Found",
-        "when checking Status";
+      unless is_eq $response->header( "Status" ), "302 Found",
+      "when checking Status";
     return
-        unless is_eq $response->header("Location"),
-        $location,
-        "when checking went to the right place";
+      unless is_eq $response->header( "Location" ),
+      $location,
+      "when checking went to the right place";
     ok;
 
     return $response;
@@ -171,8 +170,8 @@ sub download_ok {
     my ( $code, $mime, $content ) = make_request( $path, @_ );
 
     local $Test::name = "download for '$path'";
-    return unless is_num $code, 200, "when checking status";
-    return unless like $mime, qr{^text/plain}, "when checking plain mimetype";
+    return unless is_num $code, 200,             "when checking status";
+    return unless like $mime,   qr{^text/plain}, "when checking plain mimetype";
     ok;
 
     return $content;
@@ -186,8 +185,8 @@ sub download_gzip_ok {
     local $Test::name = "download for '$path'";
     return unless is_num $code, 200, "when checking status";
     return
-        unless like $mime, qr{^application/x-gzip},
-        "when checking plain mimetype";
+      unless like $mime, qr{^application/x-gzip},
+      "when checking plain mimetype";
     ok;
 
     return $content;
@@ -198,25 +197,21 @@ sub make_request {
     my $path = shift;
 
     my $cgi = CGI->new;
-    $cgi->path_info($path);
-    while (@_) {
+    $cgi->path_info( $path );
+    while ( @_ ) {
         my $name  = shift;
         my $value = shift;
         $cgi->param( $name, $value );
     }
 
     my $result = capture {
-        $server->handle_request($cgi);
+        $server->handle_request( $cgi );
     };
 
-    my $r = HTTP::Response->parse($result);
+    my $r = HTTP::Response->parse( $result );
     return wantarray
-        ? (
-        $r->code                   || "",
-        $r->header("Content-Type") || "",
-        $r->content                || "", $r
-        )
-        : $r->as_string;
+      ? ( $r->code || "", $r->header( "Content-Type" ) || "", $r->content || "", $r )
+      : $r->as_string;
 }
 
 "I wonder if dom's script that looks for true values at the end of modules looks in test modules too?";

@@ -9,13 +9,13 @@ use Perl::Tidy;
 use Template;
 use YAML qw(LoadFile DumpFile);
 
-foreach my $filename ( File::Find::Rule->new->file->in('root/static/css') ) {
+foreach my $filename ( File::Find::Rule->new->file->in( 'root/static/css' ) ) {
     next if $filename =~ /my-screen\.css/;
-    unlink($filename) || die $!;
+    unlink( $filename ) || die $!;
 }
 
 my $settings = 'blueprint/lib/settings.yml';
-my $conf     = LoadFile($settings);
+my $conf     = LoadFile( $settings );
 $conf->{cpanminiwebserver}->{path} = cwd . '/root/static/css/';
 DumpFile( $settings, $conf );
 use YAML;
@@ -48,10 +48,11 @@ outs_raw $css;
 my $tt = Template->new;
 $tt->process(
     \$template,
-    {   files => [
-            [ 'ie'     => scalar read_file('root/static/css/ie.css') ],
-            [ 'print'  => scalar read_file('root/static/css/print.css') ],
-            [ 'screen' => scalar read_file('root/static/css/screen.css') ],
+    {
+        files => [
+            [ 'ie'     => scalar read_file( 'root/static/css/ie.css' ) ],
+            [ 'print'  => scalar read_file( 'root/static/css/print.css' ) ],
+            [ 'screen' => scalar read_file( 'root/static/css/screen.css' ) ],
         ],
     },
     \my $perl,

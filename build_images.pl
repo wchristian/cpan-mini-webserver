@@ -29,14 +29,7 @@ outs_raw decode_base64($encoded);
 };
 
 my $tt = Template->new;
-$tt->process(
-    \$template,
-    {   files => [
-            [ 'logo'    => encode_base64( read_file('images/logo.png') ) ],
-            [ 'favicon' => encode_base64( read_file('images/favicon.png') ) ],
-        ],
-    },
-    \my $perl,
-) || die $template->error();
+$tt->process( \$template, { files => [ [ 'logo' => encode_base64( read_file( 'images/logo.png' ) ) ], [ 'favicon' => encode_base64( read_file( 'images/favicon.png' ) ) ], ], }, \my $perl, )
+  || die $template->error();
 Perl::Tidy::perltidy( source => \$perl, destination => \my $tidied );
 write_file( 'lib/CPAN/Mini/Webserver/Templates/Images.pm', $tidied );

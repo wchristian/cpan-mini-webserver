@@ -40,4 +40,3 @@ WriteMakefile(
     },
     'EXE_FILES' => ['bin/minicpan_webserver'],
 );
-

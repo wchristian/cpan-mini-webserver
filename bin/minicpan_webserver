@@ -9,8 +9,8 @@ use Getopt::Long;
 my $port = 2963;
 GetOptions( "port=i" => \$port, );
 
-my $server = CPAN::Mini::Webserver->new($port);
-$server->run();
+my $server = CPAN::Mini::Webserver->new( $port );
+$server->run;
 
 __END__
 

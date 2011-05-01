@@ -48,6 +48,14 @@ my $server;
         return 0;
     }
 
+    sub unlike($$;$) {
+        local $Test::Builder::Level = $Test::Builder::Level + 1;
+        return 1 if $_[0] !~ $_[1];
+        $Tester->unlike( $_[0], $_[1], $Test::name );
+        $Tester->diag( $_[2] ) if $_[2];
+        return 0;
+    }
+
     sub ok() {
         $Tester->ok( 1, $Test::name );
         return 1;
@@ -172,6 +180,7 @@ sub download_ok {
     local $Test::name = "download for '$path'";
     return unless is_num $code, 200,             "when checking status";
     return unless like $mime,   qr{^text/plain}, "when checking plain mimetype";
+    return unless unlike $mime, qr{charset},     "no charset is set for file downloads";
     ok;
 
     return $content;

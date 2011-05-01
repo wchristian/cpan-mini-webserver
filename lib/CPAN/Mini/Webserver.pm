@@ -483,6 +483,7 @@ sub download_file {
     my $filename  = $self->filename;
 
     my ( $distribution ) = grep { $_->cpanid eq uc $pauseid && $_->distvname eq $distvname } $self->parse_cpan_packages->distributions;
+    die "Distribution '$distvname' unknown for PAUSE id '$pauseid'." if !$distribution;
 
     return $self->redirect( "/authors/id/" . $distribution->prefix ) if !$filename;
 

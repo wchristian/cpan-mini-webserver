@@ -173,6 +173,18 @@ sub error404_ok {
 }
 push @EXPORT, "error404_ok";
 
+sub error500_ok {
+    my $path = shift;
+    my ( $code, $mime, $content, $response ) = make_request( $path, @_ );
+
+    local $Test::name = "error 500 for '$path'";
+    return unless is_num $code, 500, "when checking status";
+    ok;
+
+    return $response;
+}
+push @EXPORT, "error500_ok";
+
 sub download_ok {
     my $path = shift;
     my ( $code, $mime, $content ) = make_request( $path, @_ );

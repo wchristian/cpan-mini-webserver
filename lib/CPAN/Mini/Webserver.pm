@@ -154,6 +154,8 @@ sub handle_request {
     };
     print $result;
 
+    binmode STDOUT;
+
     return;
 }
 

@@ -650,11 +650,10 @@ CPAN::Mini::Webserver - Search and browse Mini CPAN
 
 =head1 DESCRIPTION
 
-This module is the driver that provides a web server that allows
-you to search and browse Mini CPAN. First you must install
-CPAN::Mini and create a local copy of CPAN using minicpan.
-Then you may run minicpan_webserver and search and
-browse Mini CPAN at http://localhost:2963/.
+This module is the driver that provides a web server that allows you to search
+and browse Mini CPAN. See L<minicpan_webserver> for details on its use.
+
+=head1 SUPPORT
 
 You may access the Git repository at:
 

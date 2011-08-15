@@ -7,6 +7,9 @@ use warnings;
 use Test::Builder;
 
 use Capture::Tiny 'capture';
+use Compress::Zlib;
+use File::Path 'remove_tree';
+use File::Slurp qw( read_file write_file );
 
 use HTTP::Response;
 use CGI;
@@ -68,9 +71,11 @@ my $server;
 }
 
 sub setup_server {
+    my ( $mini_path ) = @_;
+
     eval {
         $server = CPAN::Mini::Webserver->new( 2963 );
-        $server->after_setup_listener( "t/mini/cache" );
+        $server->after_setup_listener( "$mini_path/cache" );
     };
 
     skip_all() if $@ && $@ =~ /Please set up minicpan/;
@@ -233,6 +238,26 @@ sub make_request {
     return wantarray
       ? ( $r->code || "", $r->header( "Content-Type" ) || "", $r->content || "", $r )
       : $r->as_string;
+}
+
+push @EXPORT, "setup_test_minicpan";
+sub setup_test_minicpan {
+    my ( $mini_path ) = @_;
+
+    die "need a cpanmini path" if !$mini_path;
+
+    $ENV{CPAN_MINI_CONFIG} = "$mini_path/.minicpanrc";
+    remove_tree( "$mini_path/cache" );
+
+    for my $file ( map "$mini_path/$_", qw( authors/01mailrc.txt modules/02packages.details.txt ) ) {
+        my $gz_file = "$file.gz";
+        unlink $gz_file if -e $gz_file;
+        my $gz = Compress::Zlib::memGzip( read_file( $file, binmode => ':raw' ) ) or die "Cannot compress $file: $gzerrno\n";
+        write_file( $gz_file, { binmode => ':raw' }, $gz );
+    }
+
+    my $server = setup_server( $mini_path );
+    return $server;
 }
 
 "I wonder if dom's script that looks for true values at the end of modules looks in test modules too?";

@@ -6,13 +6,10 @@ use Test::InDistDir;
 use lib 't';
 
 use Test::More;
-use Compress::Zlib;
 use WebserverTester;
 use CPAN::Mini::Webserver;
-use File::Slurp qw( read_file write_file );
-use File::Path 'remove_tree';
 
-my $server = setup_test_minicpan();
+my $server = setup_test_minicpan( "t/mini" );
 plan tests => 51;
 
 my $name =
@@ -112,18 +109,3 @@ like $html, qr/тестируем документацию/, 'utf8 text in file 
 
 my $res = error500_ok( "/download/~MELEZHIK/AMZ_TEST-v0.0.3/AMZ_TEST-v0.0.3/lib/AMZ/Test.pm" );
 like( $res->content, qr|\QDistribution &#39;AMZ_TEST-v0.0.3&#39; unknown for PAUSE id &#39;MELEZHIK&#39;.\E| );
-
-sub setup_test_minicpan {
-    $ENV{CPAN_MINI_CONFIG} = 't/mini/.minicpanrc';
-    remove_tree( "t/mini/cache" );
-
-    for my $file ( qw( t/mini/authors/01mailrc.txt t/mini/modules/02packages.details.txt ) ) {
-        my $gz_file = "$file.gz";
-        unlink $gz_file if -e $gz_file;
-        my $gz = Compress::Zlib::memGzip( read_file( $file, binmode => ':raw' ) ) or die "Cannot compress $file: $gzerrno\n";
-        write_file( $gz_file, { binmode => ':raw' }, $gz );
-    }
-
-    my $server = setup_server();
-    return $server;
-}

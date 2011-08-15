@@ -2,12 +2,8 @@
 use strict;
 use warnings;
 
-BEGIN {
-    use Cwd;
-    chdir '..' if getcwd =~ m@/t$@;
-    use lib 'lib';
-    use lib 't';
-}
+use Test::InDistDir;
+use lib 't';
 
 use Test::More;
 use Compress::Zlib;

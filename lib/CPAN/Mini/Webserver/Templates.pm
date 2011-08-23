@@ -62,7 +62,7 @@ private template 'author_link' => sub {
     my ( $self, $author_desc, $arguments ) = @_;
 
     my $author = $author_desc;
-    $author = $arguments->{parse_cpan_authors}->author( $author_desc ) if !$author_desc->isa( 'Parse::CPAN::Authors::Author' );
+    $author = $arguments->{parse_cpan_authors}->author( $author_desc ) if !$author_desc->isa( 'Parse::CPAN::Authors::Author' ) and !$author_desc->isa( 'Parse::CPAN::Whois::Author' );
 
     my $name = my $pause_id = $author_desc;
     $name     = $author->name    if $author;

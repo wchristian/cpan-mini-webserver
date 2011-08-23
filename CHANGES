@@ -1,5 +1,15 @@
 Revision history for Perl module CPAN::Mini::Webserver:
 
+0.52 Sat Aug 15 14:07:00 GMT 2011
+     [ BUGFIXES]
+     - utf8 in file downloads is now transferred in binary mode
+     - CPAN::Mini mirrors with 00whois.xml do not cause a crash anymore
+
+     [ CHANGES ]
+     - requests to unknown dists in file downloads now generated better
+       error messages
+     - Rewrote parts of the documentation to be easier readable.
+
 0.51 Sat Jan 12 16:42:55 GMT 2011
      [ ENHANCEMENTS]
      - the display of recently added dists on the frontpage is now limited

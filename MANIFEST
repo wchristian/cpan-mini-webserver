@@ -129,8 +129,14 @@ t/mini/authors/id/A/AN/ANDK/patches/CHECKSUMS
 t/mini/authors/id/A/AN/CHECKSUMS
 t/mini/authors/id/A/CHECKSUMS
 t/mini/authors/id/CHECKSUMS
+t/mini/authors/id/M/ME/MELEZHIK/AMZ_TEST-0.0.2.tar.gz
 t/mini/modules/02packages.details.txt
 t/mini/modules/03modlist.data
+t/mini_whois/.minicpanrc
+t/mini_whois/authors/00whois.xml
+t/mini_whois/authors/01mailrc.txt
+t/mini_whois/modules/02packages.details.txt
 t/pod.t
 t/simple.t
 t/WebserverTester.pm
+t/whois.t

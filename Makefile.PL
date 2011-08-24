@@ -35,6 +35,7 @@ WriteMakefile(
         'Search::QueryParser'      => '0',
         'String::CamelCase'        => '0',
         'Template::Declare'        => '0.29',
+        'Test::InDistDir'          => '0',
         'Test::More'               => '0',
         'Text::Unidecode'          => '0',
     },

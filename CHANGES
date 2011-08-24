@@ -1,5 +1,9 @@
 Revision history for Perl module CPAN::Mini::Webserver:
 
+0.53 Wed Aug 24 14:20:00 GMT 2011
+     [ BUGFIXES]
+     - updated PreReqs so installation goes fine
+
 0.52 Sat Aug 15 14:07:00 GMT 2011
      [ BUGFIXES]
      - utf8 in file downloads is now transferred in binary mode

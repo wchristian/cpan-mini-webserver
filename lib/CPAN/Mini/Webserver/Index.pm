@@ -9,16 +9,19 @@ has 'index' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
 
 sub add {
     my ( $self, $key, $words ) = @_;
+
     my $index = $self->index;
     push @{ $index->{$_} }, $key for @{$words};
+
+    return;
 }
 
 sub create_index {
     my ( $self, $parse_cpan_authors, $parse_cpan_packages ) = @_;
 
     for my $author ( $parse_cpan_authors->authors ) {
-        my @words = split ' ', unidecode lc $author->name;
-        push @words, lc $author->pauseid;
+        my @words = ( $author->name, $author->pauseid );
+        @words = map { lc } uniq @words;
         $self->add( $author, \@words );
     }
 
@@ -29,7 +32,6 @@ sub create_index {
             push @words, wordsplit $word;
         }
         @words = map { lc } uniq @words;
-
         $self->add( $distribution, \@words );
     }
 
@@ -43,20 +45,18 @@ sub create_index {
         $self->add( $package, \@words );
     }
 
+    return;
 }
 
 sub search {
     my ( $self, $q ) = @_;
-    my $index = $self->index;
-    my @results;
 
     my $qp = Search::QueryParser->new( rxField => qr/NOTAFIELD/, );
     my $query = $qp->parse( $q, 1 );
-    unless ( $query ) {
+    return if !$query;
 
-        # warn "Error in query : " . $qp->err;
-        return;
-    }
+    my $index = $self->index;
+    my @results;
 
     for my $part ( @{ $query->{'+'} } ) {
         my $value = $part->{value};
@@ -87,6 +87,7 @@ sub search {
 
 sub search_word {
     my ( $self, $word ) = @_;
+
     my $index = $self->index;
     my @words = split /(?:\:\:| |-)/, unidecode lc $word;
     @words = grep exists( $index->{$_} ), @words;

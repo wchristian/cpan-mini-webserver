@@ -116,7 +116,7 @@ sub after_setup_listener {
           && ( -f $packages_filename );
 
     my %cache_opts = ( ttl => 60 * 60 );
-    $cache_opts{directory} = $cache_dir if $cache_dir;
+    $cache_opts{directory} = $cache_dir         if $cache_dir;
     $cache_opts{directory} = $config{cache_dir} if $config{cache_dir};
     my $cache = App::Cache->new( \%cache_opts );
 
@@ -489,9 +489,9 @@ sub download_file {
     my $contents = $self->get_file_from_tarball( $distribution, $filename );
     $self->send_http_header(
         200,
-        -type   => 'text/plain',
+        -type           => 'text/plain',
         -content_length => length $contents,
-        -charset => '',
+        -charset        => '',
     );
 
     return $contents;
@@ -606,10 +606,10 @@ sub download_cpan {
 
     $self->send_http_header(
         200,
-        -type        => $content_type,
+        -type                => $content_type,
         -content_disposition => "attachment; filename=" . $file->basename,
         -content_length      => -s $fh,
-        -charset => '',
+        -charset             => '',
     );
     while ( <$fh> ) {
         print;

@@ -19,33 +19,43 @@ sub add {
 sub create_index {
     my ( $self, $parse_cpan_authors, $parse_cpan_packages ) = @_;
 
-    for my $author ( $parse_cpan_authors->authors ) {
-        my @words = ( $author->name, $author->pauseid );
-        @words = map { lc } uniq @words;
-        $self->add( $author, \@words );
-    }
+    $self->_index_items_with( "_author_words",  $parse_cpan_authors->authors );
+    $self->_index_items_with( "_dist_words",    $parse_cpan_packages->latest_distributions );
+    $self->_index_items_with( "_package_words", $parse_cpan_packages->packages );
 
-    for my $distribution ( $parse_cpan_packages->latest_distributions ) {
-        my @words;
-        for my $word ( split '-', unidecode $distribution->dist ) {
-            push @words, $word;
-            push @words, wordsplit $word;
-        }
-        @words = map { lc } uniq @words;
-        $self->add( $distribution, \@words );
-    }
+    return;
+}
 
-    for my $package ( $parse_cpan_packages->packages ) {
-        my @words;
-        for my $word ( split '::', unidecode $package->package ) {
-            push @words, $word;
-            push @words, wordsplit $word;
-        }
+sub _index_items_with {
+    my ( $self, $method, @items ) = @_;
+
+    for my $item ( @items ) {
+        my @words = $self->$method( $item );
         @words = map { lc } uniq @words;
-        $self->add( $package, \@words );
+        $self->add( $item, \@words );
     }
 
     return;
+}
+
+sub _author_words {
+    my ( $self, $author ) = @_;
+    my @words = ( $author->name, $author->pauseid );
+    return @words;
+}
+
+sub _dist_words {
+    my ( $self, $dist ) = @_;
+    my @words = split '-', unidecode $dist->dist;
+    @words = map { $_, wordsplit( $_ ) } @words;
+    return @words;
+}
+
+sub _package_words {
+    my ( $self, $package ) = @_;
+    my @words = split '::', unidecode $package->package;
+    @words = map { $_, wordsplit( $_ ) } @words;
+    return @words;
 }
 
 sub search {

@@ -153,7 +153,7 @@ private template 'search_results' => sub {
     my @packages      = @{ $arguments->{packages} };
     if ( @authors + @distributions + @packages ) {
         outs_raw '<table>';
-        foreach my $author ( @authors ) {
+        for my $author ( @authors ) {
 
             row {
                 cell {
@@ -163,7 +163,7 @@ private template 'search_results' => sub {
             };
         }
 
-        foreach my $distribution ( @distributions ) {
+        for my $distribution ( @distributions ) {
             row {
                 cell {
                     show( 'distribution_link', $distribution );
@@ -172,7 +172,7 @@ private template 'search_results' => sub {
                 };
             };
         }
-        foreach my $package ( @packages ) {
+        for my $package ( @packages ) {
             row {
                 cell {
                     show( 'package_link', $package );
@@ -207,7 +207,7 @@ template 'index' => sub {
                     if ( $recents->{count} ) {
                         h2 { 'Recent distributions' };
                         ul {
-                            foreach my $recent ( @{ $recents->{display_list} } ) {
+                            for my $recent ( @{ $recents->{display_list} } ) {
                                 my $cpanid    = $recent->cpanid;
                                 my $distvname = $recent->distvname;
                                 next unless $distvname;
@@ -353,7 +353,7 @@ template 'author' => sub {
                 div {
                     attr { class => 'span-18 last' };
                     outs_raw '<table>';
-                    foreach my $distribution ( @distributions ) {
+                    for my $distribution ( @distributions ) {
                         row {
                             cell {
                                 show( 'distribution_link', $distribution );
@@ -431,7 +431,7 @@ private template 'metadata' => sub {
     div {
         attr { class => 'metadata' };
         dl {
-            foreach my $key ( qw(abstract license repository), 'release date' ) {
+            for my $key ( qw(abstract license repository), 'release date' ) {
                 if ( defined $meta->{$key} ) {
                     dt { ucfirst $key; };
                     if ( defined $meta->{resources}->{$key} ) {
@@ -445,7 +445,7 @@ private template 'metadata' => sub {
                     }
                 }
             }
-            foreach my $datum ( keys %{ $meta->{resources} } ) {
+            for my $datum ( keys %{ $meta->{resources} } ) {
                 dt { ucfirst $datum; }
                 dd {
                     a {
@@ -565,7 +565,7 @@ template 'filelist' => sub {
     my ( $self, $pauseid, $distvname, $label, $filenames ) = @_;
     h2 { $label };
     outs_raw '<table>';
-    foreach my $filename ( @$filenames ) {
+    for my $filename ( @$filenames ) {
         show(
             distribution_file => $pauseid,
             $distvname, $filename
@@ -602,7 +602,7 @@ template 'distribution' => sub {
 
                     #                    outs_raw '<table>';
                     my ( @code, @test, @other, @doc );
-                    foreach ( @filenames ) {
+                    for ( @filenames ) {
                         if ( m{(?:/bin/|\.p(?:m|l)$)} and not m{/inc/} ) {
                             push @code, $_;
                         }
@@ -625,7 +625,7 @@ template 'distribution' => sub {
                     show( 'filelist', $pauseid, $distvname, 'Other', \@other )
                       if @other;
 
-                    #                    foreach my $filename (@filenames) {
+                    #                    for my $filename (@filenames) {
                     #                        show(
                     #                            distribution_file => $pauseid,
                     #                            $distvname, $filename

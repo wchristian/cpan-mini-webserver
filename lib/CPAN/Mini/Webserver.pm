@@ -358,9 +358,7 @@ sub author_page {
     my $checksum = $self->checksum_data_for_author( uc $pauseid );
     my %dates;
     if ( not $@ and defined $checksum ) {
-        foreach my $dist ( @distributions ) {
-            $dates{ $dist->distvname } = $checksum->{ $dist->filename }->{mtime};
-        }
+        $dates{ $_->distvname } = $checksum->{ $_->filename }->{mtime} for @distributions;
     }
 
     $self->send_http_header( 200, -charset => 'utf-8' );
@@ -530,7 +528,7 @@ sub raw_page {
         @lines = map { s{<span class="line_number">}{}; $_ } @lines;
 
         # remove newlines
-        $_ =~ s{<br>}{}g foreach @lines;
+        $_ =~ s{<br>}{}g for @lines;
 
         # link module names to ourselves
         @lines = map {

@@ -44,6 +44,7 @@ has 'pauseid'             => ( is => 'rw' );
 has 'distvname'           => ( is => 'rw' );
 has 'filename'            => ( is => 'rw' );
 has 'index'               => ( is => 'rw', isa => 'CPAN::Mini::Webserver::Index' );
+has 'config'              => ( is => 'ro', lazy_build => 1 );
 
 our $VERSION = '0.53';
 
@@ -94,13 +95,17 @@ sub send_http_header {
     print $cgi->header( %params );
 }
 
+sub _build_config {
+    my %config = CPAN::Mini->read_config;
+    return \%config;
+}
+
 # this is a hook that HTTP::Server::Simple calls after setting up the
 # listening socket. we use it load the indexes
 sub after_setup_listener {
     my ( $self, $cache_dir ) = @_;
 
-    my %config    = CPAN::Mini->read_config;
-    my $directory = dir( glob $config{local} );
+    my $directory = dir( glob $self->config->{local} );
     $self->directory( $directory );
     my $authors_filename  = file( $directory, 'authors', '01mailrc.txt.gz' );
     my $packages_filename = file( $directory, 'modules', '02packages.details.txt.gz' );
@@ -111,8 +116,8 @@ sub after_setup_listener {
           && ( -f $packages_filename );
 
     my %cache_opts = ( ttl => 60 * 60 );
-    $cache_opts{directory} = $cache_dir         if $cache_dir;
-    $cache_opts{directory} = $config{cache_dir} if $config{cache_dir};
+    $cache_opts{directory} = $cache_dir if $cache_dir;
+    $cache_opts{directory} = $self->config->{cache_dir} if $self->config->{cache_dir};
     my $cache = App::Cache->new( \%cache_opts );
 
     my $whois_filename = file( $directory, 'authors', '00whois.xml' );
@@ -133,7 +138,7 @@ sub after_setup_listener {
     my $scratch = dir( $cache->scratch );
     $self->scratch( $scratch );
 
-    my $index = CPAN::Mini::Webserver::Index->new( mini_dir => $self->directory, full_text => $config{full_text} );
+    my $index = CPAN::Mini::Webserver::Index->new( mini_dir => $self->directory, full_text => $self->config->{full_text} );
     $self->index( $index );
     $index->create_index( $parse_cpan_authors, $parse_cpan_packages );
 }

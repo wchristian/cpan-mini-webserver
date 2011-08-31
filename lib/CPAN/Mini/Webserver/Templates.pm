@@ -332,7 +332,7 @@ private template 'authorinfo' => sub {
         }
         li {
             a {
-                attr { href => "http://bbbike.radzeit.de/~slaven/cpantestersmatrix.cgi?author=$pauseid" };
+                attr { href => "http://matrix.cpantesters.org/?author=$pauseid" };
                 'Test Matrix';
             };
         }
@@ -533,7 +533,7 @@ private template 'dist_links' => sub {
         li {
             outs "Test ";
             a {
-                attr { href => "http://bbbike.radzeit.de/~slaven/cpantestersmatrix.cgi?dist=$distname" };
+                attr { href => "http://matrix.cpantesters.org/?dist=$distname" };
                 "matrix";
             };
             outs " and ";

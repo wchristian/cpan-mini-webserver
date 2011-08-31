@@ -13,7 +13,7 @@ use List::MoreUtils qw(uniq);
 use Module::InstalledVersion;
 use Moose;
 use Parse::CPAN::Authors;
-use Parse::CPAN::Packages;
+use Parse::CPAN::Packages 2.34;
 use Parse::CPAN::Whois;
 use Parse::CPAN::Meta;
 use Pod::Simple::HTML;
@@ -52,12 +52,7 @@ sub service_name {
 }
 
 sub get_file_from_tarball {
-    my ( $self, $distribution, $filename ) = @_;
-
-    my $file = file( $self->directory, 'authors', 'id', $distribution->prefix );
-    my $peek = Archive::Peek->new( filename => $file );
-    my $contents = $peek->file( $filename );
-    return $contents;
+    die "Deprecated above 0.53. This function can now be found in Parse::CPAN::Packages.";
 }
 
 sub checksum_data_for_author {
@@ -382,7 +377,7 @@ sub distribution_page {
     my ( $distribution ) = grep { $_->cpanid eq uc $pauseid && $_->distvname eq $distvname } $self->parse_cpan_packages->distributions;
 
     my $filename = $distribution->distvname . "/META.yml";
-    my $metastr  = $self->get_file_from_tarball( $distribution, $filename );
+    my $metastr  = $distribution->get_file_from_tarball( $filename );
     my $meta     = {};
     my @yaml     = eval { Parse::CPAN::Meta::Load( $metastr ); };
     $meta = $yaml[0] if !$@;
@@ -390,7 +385,7 @@ sub distribution_page {
     my $checksum_data = $self->checksum_data_for_author( uc $pauseid );
     $meta->{'release date'} = $checksum_data->{ $distribution->filename }->{mtime};
 
-    my @filenames = $self->list_files( $distribution );
+    my @filenames = $distribution->list_files;
 
     $self->send_http_header( 200, -charset => 'utf-8' );
     return Template::Declare->show(
@@ -448,7 +443,7 @@ sub file_page {
 
     my ( $distribution ) = grep { $_->cpanid eq uc $pauseid && $_->distvname eq $distvname } $self->parse_cpan_packages->distributions;
 
-    my $contents = $self->get_file_from_tarball( $distribution, $filename );
+    my $contents = $distribution->get_file_from_tarball( $filename );
 
     my $parser = Pod::Simple::HTML->new;
     $parser->perldoc_url_prefix( '/perldoc?' );
@@ -486,7 +481,7 @@ sub download_file {
 
     return $self->redirect( "/authors/id/" . $distribution->prefix ) if !$filename;
 
-    my $contents = $self->get_file_from_tarball( $distribution, $filename );
+    my $contents = $distribution->get_file_from_tarball( $filename );
     $self->send_http_header(
         200,
         -type           => 'text/plain',
@@ -507,7 +502,7 @@ sub raw_page {
 
     my $file = file( $self->directory, 'authors', 'id', $distribution->prefix );
 
-    my $contents = $self->get_file_from_tarball( $distribution, $filename );
+    my $contents = $distribution->get_file_from_tarball( $filename );
 
     my $html;
 
@@ -571,12 +566,7 @@ sub package_page {
     my ( $pauseid, $distvname, $package_name ) = $path =~ m{^/package/(.+?)/(.+?)/(.+?)/$};
 
     my ( $p ) = grep $self->is_package_for_package_page( $pauseid, $distvname, $package_name, $_ ), $self->parse_cpan_packages->packages;
-    my $distribution = $p->distribution;
-    my @filenames    = $self->list_files( $distribution );
-    my $package_file = $package_name;
-    $package_file =~ s{::}{/}g;
-    $package_file .= '.pm';
-    my ( $filename ) = grep { $_ =~ /$package_file/ } sort { length( $a ) <=> length( $b ) } @filenames;
+    my $filename = $p->filename;
     my $url = "/~$pauseid/$distvname/$filename";
 
     # TODO: duplicate results and no results here need to be handled (maybe search through contents of a dist in that case)
@@ -619,11 +609,7 @@ sub download_cpan {
 }
 
 sub list_files {
-    my ( $self, $distribution ) = @_;
-    my $file = file( $self->directory, 'authors', 'id', $distribution->prefix );
-    my $peek = Archive::Peek->new( filename => $file );
-    my @filenames = $peek->files;
-    return @filenames;
+    die "Deprecated above 0.53. This function can now be found in Parse::CPAN::Packages.";
 }
 
 sub direct_to_template {

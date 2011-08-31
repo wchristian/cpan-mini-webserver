@@ -27,7 +27,7 @@ WriteMakefile(
         'Parse::CPAN::Authors'     => '0',
         'Parse::CPAN::Whois'       => '0.02',
         'Parse::CPAN::Meta'        => '0',
-        'Parse::CPAN::Packages'    => '2.28',
+        'Parse::CPAN::Packages'    => '2.34',
         'Path::Class'              => '0',
         'Pod::Simple::HTML'        => '0',
         'PPI'                      => '0',

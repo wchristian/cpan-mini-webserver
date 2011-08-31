@@ -315,12 +315,14 @@ private template 'authorinfo' => sub {
                 attr { href => "mailto:$email" };
                 $email;
             };
-        }
-        li {
-            a {
-                attr { href => $url };
-                $url;
-            };
+        };
+        if ( $url ) {
+            li {
+                a {
+                    attr { href => $url };
+                    $url;
+                };
+            }
         }
         li {
             a {

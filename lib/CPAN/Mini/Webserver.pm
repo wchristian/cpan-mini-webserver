@@ -45,6 +45,7 @@ has distvname           => ( is => 'rw' );
 has filename            => ( is => 'rw' );
 has index               => ( is => 'rw', isa => 'CPAN::Mini::Webserver::Index' );
 has config              => ( is => 'ro', lazy_build => 1 );
+has is_cgi              => ( is => 'rw' );
 has base_url            => ( is => 'ro', lazy_build => 1 );
 
 our $VERSION = '0.53';
@@ -91,7 +92,9 @@ sub send_http_header {
     elsif ( defined $params{-type} ) {
         binmode STDOUT, ":raw";
     }
-    print "HTTP/1.0 $code\015\012";
+    my $pre = "HTTP/1.0";
+    $pre = "Status:" if $self->is_cgi;
+    print "$pre $code\015\012";
     print $self->cgi->header( %params );
 }
 
@@ -303,7 +306,9 @@ sub not_found_page {
 
 sub redirect {
     my ( $self, $url ) = @_;
-    return "HTTP/1.0 302\015\012" . $self->cgi->redirect( $self->base_url . $url );
+    my $status = "HTTP/1.0 302";
+    $status = "Status: 302" if $self->is_cgi;
+    return "$status\015\012" . $self->cgi->redirect( $self->base_url . $url );
 }
 
 sub search_page {
@@ -708,6 +713,16 @@ sub render {
     $params->{base_url}         ||= $self->base_url;
 
     return Template::Declare->show( $template, $params );
+}
+
+sub process_single_cgi_request {
+    my ( $self ) = @_;
+
+    $self->is_cgi( 1 );
+    $self->after_setup_listener;
+    $self->handle_request;
+
+    return;
 }
 
 sub direct_to_template {

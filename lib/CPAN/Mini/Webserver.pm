@@ -33,18 +33,18 @@ else {
     extends 'HTTP::Server::Simple::CGI';
 }
 
-has 'hostname'  => ( is => 'rw', lazy_build => 1 );
-has 'cgi'       => ( is => 'rw', isa        => 'CGI', lazy_build => 1 );
-has 'directory'           => ( is => 'rw', isa => 'Path::Class::Dir' );
-has 'scratch'             => ( is => 'rw', isa => 'Path::Class::Dir' );
-has 'author_type'         => ( is => 'rw' );
-has 'parse_cpan_authors'  => ( is => 'rw' );
-has 'parse_cpan_packages' => ( is => 'rw', isa => 'Parse::CPAN::Packages' );
-has 'pauseid'             => ( is => 'rw' );
-has 'distvname'           => ( is => 'rw' );
-has 'filename'            => ( is => 'rw' );
-has 'index'               => ( is => 'rw', isa => 'CPAN::Mini::Webserver::Index' );
-has 'config'              => ( is => 'ro', lazy_build => 1 );
+has hostname  => ( is => 'rw', lazy_build => 1 );
+has cgi       => ( is => 'rw', isa        => 'CGI', lazy_build => 1 );
+has directory => ( is => 'rw', isa        => 'Path::Class::Dir' );
+has scratch   => ( is => 'rw', isa        => 'Path::Class::Dir' );
+has author_type         => ( is => 'rw' );
+has parse_cpan_authors  => ( is => 'rw' );
+has parse_cpan_packages => ( is => 'rw', isa => 'Parse::CPAN::Packages' );
+has pauseid             => ( is => 'rw' );
+has distvname           => ( is => 'rw' );
+has filename            => ( is => 'rw' );
+has index               => ( is => 'rw', isa => 'CPAN::Mini::Webserver::Index' );
+has config              => ( is => 'ro', lazy_build => 1 );
 
 our $VERSION = '0.53';
 

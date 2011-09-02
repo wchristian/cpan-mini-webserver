@@ -241,10 +241,9 @@ sub get_template_type_info {
 sub index_page {
     my $self = shift;
     $self->send_http_header( 200, -charset => 'utf-8' );
-    return Template::Declare->show(
+    return $self->render(
         'index',
         {
-            packages_as_tree   => $self->packages_as_tree,
             recents            => $self->get_recent_dists,
             parse_cpan_authors => $self->parse_cpan_authors,
         }
@@ -274,7 +273,7 @@ sub not_found_page {
     my $q    = shift;
     my ( $authors, $dists, $packages ) = $self->_do_search( $q );
     $self->send_http_header( 404, -charset => 'utf-8' );
-    return Template::Declare->show(
+    return $self->render(
         '404',
         {
             parse_cpan_authors => $self->parse_cpan_authors,
@@ -299,7 +298,7 @@ sub search_page {
     my ( $authors, $dists, $packages ) = $self->_do_search( $q );
     $packages = $self->_packages_with_search_preview( $packages, $q );
     $self->send_http_header( 200, -charset => 'utf-8' );
-    return Template::Declare->show(
+    return $self->render(
         'search',
         {
             parse_cpan_authors => $self->parse_cpan_authors,
@@ -307,7 +306,6 @@ sub search_page {
             authors            => $authors,
             distributions      => $dists,
             packages           => $packages,
-            packages_as_tree   => $self->packages_as_tree,
         }
     );
 }
@@ -399,14 +397,13 @@ sub author_page {
     }
 
     $self->send_http_header( 200, -charset => 'utf-8' );
-    return Template::Declare->show(
+    return $self->render(
         'author',
         {
-            author           => $author,
-            pauseid          => $pauseid,
-            distributions    => \@distributions,
-            dates            => \%dates,
-            packages_as_tree => $self->packages_as_tree,
+            author        => $author,
+            pauseid       => $pauseid,
+            distributions => \@distributions,
+            dates         => \%dates,
         }
     );
 }
@@ -431,17 +428,16 @@ sub distribution_page {
     my @filenames = $distribution->list_files;
 
     $self->send_http_header( 200, -charset => 'utf-8' );
-    return Template::Declare->show(
+    return $self->render(
         'distribution',
         {
-            author           => $self->parse_cpan_authors->author( uc $pauseid ),
-            distribution     => $distribution,
-            pauseid          => $pauseid,
-            distvname        => $distvname,
-            filenames        => \@filenames,
-            meta             => $meta,
-            pcp              => $self->parse_cpan_packages,
-            packages_as_tree => $self->packages_as_tree,
+            author       => $self->parse_cpan_authors->author( uc $pauseid ),
+            distribution => $distribution,
+            pauseid      => $pauseid,
+            distvname    => $distvname,
+            filenames    => \@filenames,
+            meta         => $meta,
+            pcp          => $self->parse_cpan_packages,
         }
     );
 }
@@ -500,17 +496,16 @@ sub file_page {
     $html =~ s/<!-- end doc -->.*$//s;
 
     $self->send_http_header( 200, -charset => 'utf-8' );
-    return Template::Declare->show(
+    return $self->render(
         'file',
         {
-            author           => $self->parse_cpan_authors->author( uc $pauseid ),
-            distribution     => $distribution,
-            pauseid          => $pauseid,
-            distvname        => $distvname,
-            filename         => $filename,
-            contents         => $contents,
-            html             => $html,
-            packages_as_tree => $self->packages_as_tree,
+            author       => $self->parse_cpan_authors->author( uc $pauseid ),
+            distribution => $distribution,
+            pauseid      => $pauseid,
+            distvname    => $distvname,
+            filename     => $filename,
+            contents     => $contents,
+            html         => $html,
         }
     );
 }
@@ -579,17 +574,16 @@ sub raw_page {
     }
 
     $self->send_http_header( 200, -charset => 'utf-8' );
-    return Template::Declare->show(
+    return $self->render(
         'raw',
         {
-            author           => $self->parse_cpan_authors->author( uc $pauseid ),
-            distribution     => $distribution,
-            filename         => $filename,
-            pauseid          => $pauseid,
-            distvname        => $distvname,
-            contents         => $contents,
-            html             => $html,
-            packages_as_tree => $self->packages_as_tree,
+            author       => $self->parse_cpan_authors->author( uc $pauseid ),
+            distribution => $distribution,
+            filename     => $filename,
+            pauseid      => $pauseid,
+            distvname    => $distvname,
+            contents     => $contents,
+            html         => $html,
         }
     );
 }
@@ -690,6 +684,15 @@ sub _convert_children_to_array {
     return;
 }
 
+sub render {
+    my ( $self, $template, $params ) = @_;
+
+    $params                     ||= {};
+    $params->{packages_as_tree} ||= $self->packages_as_tree;
+
+    return Template::Declare->show( $template, $params );
+}
+
 sub direct_to_template {
     my $self     = shift;
     my $template = shift;
@@ -701,7 +704,7 @@ sub direct_to_template {
         ( $mime ? ( -type => $mime ) : () ),
     );
 
-    return Template::Declare->show( $template );
+    return $self->render( $template );
 }
 
 1;

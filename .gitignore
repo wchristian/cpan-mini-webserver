@@ -1,8 +1,9 @@
 blib
 pm_to_blib
-t/mini/cache
-t/mini/*/*.txt.gz
+t/mini*/cache
+t/mini*/*/*.txt.gz
 Makefile
 Makefile.old
 MANIFEST.bak
+MYMETA*
 CPAN-Mini-Webserver-*

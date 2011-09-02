@@ -33,8 +33,8 @@ else {
     extends 'HTTP::Server::Simple::CGI';
 }
 
-has 'hostname'            => ( is => 'rw' );
-has 'cgi'                 => ( is => 'rw', isa => 'CGI' );
+has 'hostname'  => ( is => 'rw', lazy_build => 1 );
+has 'cgi'       => ( is => 'rw', isa        => 'CGI', lazy_build => 1 );
 has 'directory'           => ( is => 'rw', isa => 'Path::Class::Dir' );
 has 'scratch'             => ( is => 'rw', isa => 'Path::Class::Dir' );
 has 'author_type'         => ( is => 'rw' );
@@ -81,7 +81,6 @@ sub send_http_header {
     my $self   = shift;
     my $code   = shift;
     my %params = @_;
-    my $cgi    = $self->cgi;
 
     if (   ( defined $params{-charset} and $params{-charset} eq 'utf-8' )
         or ( defined $params{-type} and $params{-type} eq 'text/xml' ) )
@@ -92,12 +91,22 @@ sub send_http_header {
         binmode STDOUT, ":raw";
     }
     print "HTTP/1.0 $code\015\012";
-    print $cgi->header( %params );
+    print $self->cgi->header( %params );
 }
 
 sub _build_config {
     my %config = CPAN::Mini->read_config;
     return \%config;
+}
+
+sub _build_cgi {
+    my ( $self ) = @_;
+    return $self->cgi_class->new;
+}
+
+sub _build_hostname {
+    my ( $self ) = @_;
+    return $self->cgi->virtual_host;
 }
 
 # this is a hook that HTTP::Server::Simple calls after setting up the
@@ -146,12 +155,14 @@ sub after_setup_listener {
 sub handle_request {
     my ( $self, $cgi ) = @_;
 
+    $self->cgi( $cgi ) if $cgi;
+
     my $result = try {
-        $self->_handle_request( $cgi );
+        $self->_handle_request;
     }
     catch {
         $self->send_http_header( 500 );
-        return "<h1>Internal Server Error</h1>", $cgi->escapeHTML( $_ );
+        return "<h1>Internal Server Error</h1>", $self->cgi->escapeHTML( $_ );
     };
     print $result;
 
@@ -161,10 +172,9 @@ sub handle_request {
 }
 
 sub _handle_request {
-    my ( $self, $cgi ) = @_;
-    $self->cgi( $cgi );
-    $self->hostname( $cgi->virtual_host() );
-    my $path = $cgi->path_info;
+    my ( $self ) = @_;
+
+    my $path = $self->cgi->path_info;
 
     # $raw, $download and $install should become $action?
     my ( $raw, $install, $download, $pauseid, $distvname, $filename, $prefix );

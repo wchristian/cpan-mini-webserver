@@ -31,7 +31,7 @@ sub _index_items_with {
 
     for my $item ( @items ) {
         my @words = $self->$method( $item );
-        @words = map { lc } uniq @words;
+        @words = uniq map { lc } @words;
         $self->add( $item, \@words );
     }
 

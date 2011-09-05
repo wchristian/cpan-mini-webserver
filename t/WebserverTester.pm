@@ -95,6 +95,7 @@ sub html_page_ok {
     return
       unless like $content, qr/<html/,
       "when checking page had a html tag in it";
+    return if !unlike $content, qr{<html.*<div.*<body}s, "when checking there was no content between body and html";
     ok;
 
     return $content;

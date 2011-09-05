@@ -222,13 +222,13 @@ template 'index' => sub {
 
     html {
         attr { xmlns => 'http://www.w3.org/1999/xhtml' };
-        div {
-            attr { class => 'container' };
+        show( 'header', 'Index' );
+        body {
+            attr { onload => 'document.f.q.focus()' };
             div {
-                attr { class => 'span-24' };
-                show( 'header', 'Index' );
-                body {
-                    attr { onload => 'document.f.q.focus()' };
+                attr { class => 'container' };
+                div {
+                    attr { class => 'span-24' };
                     show( 'side_bar', $arguments->{packages_as_tree}, 'root' );
                     show( 'searchbar' );
                     h1 { 'Index' };
@@ -268,26 +268,26 @@ template '404' => sub {
     my $q = $arguments->{q};
     html {
         attr { xmlns => 'http://www.w3.org/1999/xhtml' };
-        div {
-            attr { class => 'container' };
+        show( 'header', 'File not found' );
+        body {
             div {
-                attr { class => 'span-24' };
-                show( 'header', 'File not found' );
-                body {
+                attr { class => 'container' };
+                div {
+                    attr { class => 'span-24' };
                     show( 'searchbar', $q );
                     h1 { 'Sorry. I couldn\'t find the page you wanted.' };
                     p {
                         "Unfortunately, the page you were looking for doesn't exist. Perhaps a quick search for $q will turn up what you were looking for:";
                     };
+                    h2 {
+                        outs "Search for ";
+                        outs_raw '&#147;';
+                        outs $q;
+                        outs_raw '&#148;';
+                    };
+                    show( 'search_results', $arguments );
+                    show( 'footer' );
                 };
-                h2 {
-                    outs "Search for ";
-                    outs_raw '&#147;';
-                    outs $q;
-                    outs_raw '&#148;';
-                };
-                show( 'search_results', $arguments );
-                show( 'footer' );
             };
         };
     };

@@ -649,22 +649,10 @@ template 'distribution' => sub {
                             push @other, $_;
                         }
                     }
-                    show( 'filelist', $pauseid, $distvname, 'Code', \@code, $arguments )
-                      if @code;
-                    show( 'filelist', $pauseid, $distvname, 'Documentation', \@doc, $arguments )
-                      if @doc;
-                    show( 'filelist', $pauseid, $distvname, 'Tests', \@test, $arguments )
-                      if @test;
-                    show( 'filelist', $pauseid, $distvname, 'Other', \@other, $arguments )
-                      if @other;
-
-                    #                    for my $filename (@filenames) {
-                    #                        show(
-                    #                            distribution_file => $pauseid,
-                    #                            $distvname, $filename
-                    #                        );
-                    #                    }
-                    #                    outs_raw '</table>';
+                    show( 'filelist', $pauseid, $distvname, 'Code',          \@code,  $arguments ) if @code;
+                    show( 'filelist', $pauseid, $distvname, 'Documentation', \@doc,   $arguments ) if @doc;
+                    show( 'filelist', $pauseid, $distvname, 'Tests',         \@test,  $arguments ) if @test;
+                    show( 'filelist', $pauseid, $distvname, 'Other',         \@other, $arguments ) if @other;
                 };
                 div {
                     attr { class => 'span-6 last' };

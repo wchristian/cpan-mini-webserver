@@ -638,6 +638,17 @@ template 'distribution' => sub {
                 div {
                     attr { class => 'span-18 last' };
 
+                    h2 { "Modules" };
+                    outs_raw '<table>';
+                    for my $pkg ( @{ $distribution->packages } ) {
+                        row {
+                            cell {
+                                show( 'package_link', $pkg, undef, $arguments );
+                            };
+                        };
+                    }
+                    outs_raw '</table>';
+
                     if ( !$arguments->{doc_mode} ) {
                         my ( @code, @test, @other, @doc );
                         for ( @filenames ) {

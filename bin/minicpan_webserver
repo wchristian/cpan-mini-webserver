@@ -53,6 +53,16 @@ but by adding this to .minicpanrc it can be configured:
 
   cache_dir: /tmp/your/cache/dir
 
+=head2 Full-Text Indexing
+
+CPAN::Mini::Webserver normally only indexes author, module and distribution
+names for its search, but it can be configured to inspect the tarballs in the
+cpan mirror and do a full-text index of the POD inside them. Naturally this is
+not advised for big mirrors as it is very memory-intensive. It can be enabled by
+adding this to .minicpanrc:
+
+  full_text: 1
+
 =head1 CURRENT MAINTAINER
 
 Christian Walde <walde.christian@googlemail.com>

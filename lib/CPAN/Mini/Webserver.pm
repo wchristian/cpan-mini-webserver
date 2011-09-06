@@ -133,7 +133,7 @@ sub after_setup_listener {
     my $scratch = dir( $cache->scratch );
     $self->scratch( $scratch );
 
-    my $index = CPAN::Mini::Webserver::Index->new;
+    my $index = CPAN::Mini::Webserver::Index->new( mini_dir => $self->directory, full_text => $config{full_text} );
     $self->index( $index );
     $index->create_index( $parse_cpan_authors, $parse_cpan_packages );
 }

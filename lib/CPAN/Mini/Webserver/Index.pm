@@ -4,8 +4,12 @@ use List::MoreUtils qw(uniq);
 use Search::QueryParser;
 use String::CamelCase qw(wordsplit);
 use Text::Unidecode;
+use Search::Tokenizer;
+use Pod::Simple::Text;
+use Lingua::StopWords qw( getStopWords );
 
 has 'index' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
+has 'full_text' => ( is => 'ro' );
 
 sub add {
     my ( $self, $key, $words ) = @_;
@@ -55,6 +59,31 @@ sub _package_words {
     my ( $self, $package ) = @_;
     my @words = split '::', unidecode $package->package;
     @words = map { $_, wordsplit( $_ ) } @words;
+
+    push @words, $self->_full_text_words( $package ) if $self->full_text;
+
+    return @words;
+}
+
+sub _full_text_words {
+    my ( $self, $package ) = @_;
+    my @words = split '::', unidecode $package->package;
+    @words = map { $_, wordsplit( $_ ) } @words;
+
+    my $content = $package->file_content;
+    my $text;
+    my $parser = Pod::Simple::Text->new;
+    $parser->no_whining( 1 );
+    $parser->no_errata_section( 1 );
+    $parser->output_string( \$text );
+    $parser->parse_string_document( $content );
+
+    my $stopwords = { %{ getStopWords('en') }, NAME => 1, DESCRIPTION => 1, USAGE => 1, RETURNS => 1 };
+    my $iterator = Search::Tokenizer->new( regex => qr/\p{Word}+/, lower => 0, stopwords => $stopwords )->( $text );
+    while (my ($term, $len, $start, $end, $index) = $iterator->()) {
+        push @words, $term;
+    }
+
     return @words;
 }
 

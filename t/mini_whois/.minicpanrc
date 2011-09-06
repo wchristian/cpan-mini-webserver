@@ -1,3 +1,4 @@
 local:  t/mini_whois
 remote: http://cpan.perl.org
 cache_dir: t/mini_whois/cache/cache
+full_text: 1

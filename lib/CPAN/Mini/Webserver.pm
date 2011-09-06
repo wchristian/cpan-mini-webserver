@@ -244,6 +244,7 @@ sub index_page {
     return Template::Declare->show(
         'index',
         {
+            packages_as_tree   => $self->packages_as_tree,
             recents            => $self->get_recent_dists,
             parse_cpan_authors => $self->parse_cpan_authors,
         }
@@ -305,7 +306,8 @@ sub search_page {
             q                  => $q,
             authors            => $authors,
             distributions      => $dists,
-            packages           => $packages
+            packages           => $packages,
+            packages_as_tree   => $self->packages_as_tree,
         }
     );
 }
@@ -400,10 +402,11 @@ sub author_page {
     return Template::Declare->show(
         'author',
         {
-            author        => $author,
-            pauseid       => $pauseid,
-            distributions => \@distributions,
-            dates         => \%dates,
+            author           => $author,
+            pauseid          => $pauseid,
+            distributions    => \@distributions,
+            dates            => \%dates,
+            packages_as_tree => $self->packages_as_tree,
         }
     );
 }
@@ -431,13 +434,14 @@ sub distribution_page {
     return Template::Declare->show(
         'distribution',
         {
-            author       => $self->parse_cpan_authors->author( uc $pauseid ),
-            distribution => $distribution,
-            pauseid      => $pauseid,
-            distvname    => $distvname,
-            filenames    => \@filenames,
-            meta         => $meta,
-            pcp          => $self->parse_cpan_packages,
+            author           => $self->parse_cpan_authors->author( uc $pauseid ),
+            distribution     => $distribution,
+            pauseid          => $pauseid,
+            distvname        => $distvname,
+            filenames        => \@filenames,
+            meta             => $meta,
+            pcp              => $self->parse_cpan_packages,
+            packages_as_tree => $self->packages_as_tree,
         }
     );
 }
@@ -499,13 +503,14 @@ sub file_page {
     return Template::Declare->show(
         'file',
         {
-            author       => $self->parse_cpan_authors->author( uc $pauseid ),
-            distribution => $distribution,
-            pauseid      => $pauseid,
-            distvname    => $distvname,
-            filename     => $filename,
-            contents     => $contents,
-            html         => $html,
+            author           => $self->parse_cpan_authors->author( uc $pauseid ),
+            distribution     => $distribution,
+            pauseid          => $pauseid,
+            distvname        => $distvname,
+            filename         => $filename,
+            contents         => $contents,
+            html             => $html,
+            packages_as_tree => $self->packages_as_tree,
         }
     );
 }
@@ -577,13 +582,14 @@ sub raw_page {
     return Template::Declare->show(
         'raw',
         {
-            author       => $self->parse_cpan_authors->author( uc $pauseid ),
-            distribution => $distribution,
-            filename     => $filename,
-            pauseid      => $pauseid,
-            distvname    => $distvname,
-            contents     => $contents,
-            html         => $html,
+            author           => $self->parse_cpan_authors->author( uc $pauseid ),
+            distribution     => $distribution,
+            filename         => $filename,
+            pauseid          => $pauseid,
+            distvname        => $distvname,
+            contents         => $contents,
+            html             => $html,
+            packages_as_tree => $self->packages_as_tree,
         }
     );
 }
@@ -650,6 +656,38 @@ sub download_cpan {
 
 sub list_files {
     die "Deprecated above 0.53. This function can now be found in Parse::CPAN::Packages.";
+}
+
+sub packages_as_tree {
+    my ( $self ) = @_;
+
+    return {} if !$self->config->{side_bar};
+
+    my @packages = $self->parse_cpan_packages->packages;
+
+    my %tree;
+
+    for my $pkg ( @packages ) {
+        my @parts = split /::/, $pkg->package;
+        my $node = \%tree;
+        $node = $node->{children}{$_} ||= { name => $_ } for @parts;
+        $node->{package} = $pkg;
+    }
+
+    $self->_convert_children_to_array( \%tree );
+
+    return \%tree;
+}
+
+sub _convert_children_to_array {
+    my ( $self, $node ) = @_;
+
+    my @children = sort { $a->{name} cmp $b->{name} } values %{ $node->{children} };
+    $node->{children} = \@children;
+
+    $self->_convert_children_to_array( $_ ) for @children;
+
+    return;
 }
 
 sub direct_to_template {

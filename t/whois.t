@@ -10,8 +10,6 @@ use WebserverTester qw( setup_test_minicpan html_page_ok );
 use CPAN::Mini::Webserver;
 use Path::Class 'dir';
 
-plan tests => 3;
-
 my $server = setup_test_minicpan( "t/mini_whois" );
 is( $server->scratch, dir( qw( t mini_whois cache cache _scratch ) ), "cache dir set via config" );
 ok $server->index->search_word( "functionality" ), "searching for a word returns a package";
@@ -23,3 +21,7 @@ like $result, qr(<code>.*will never .*</code>), "first preview block is found";
 
 my $html = html_page_ok( "~andk/" );
 like( $html, qr/CPAN-Test-Dummy-Perl5-Build-1.03/, "mirror with 00whois.xml does not cause a crash" );
+like( $html, qr/<li>Perl5/, "sidebar tree structure seems to exist" );
+like( $html, qr/<a href=.*CPAN::Test::Dummy::Perl5::Build.*>Build</, "there's a link in the sidebar" );
+
+done_testing;

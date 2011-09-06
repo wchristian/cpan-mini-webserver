@@ -194,6 +194,28 @@ private template 'search_results' => sub {
     }
 };
 
+private template 'side_bar' => sub {
+    my ( $self, $node, $is_root ) = @_;
+
+    ul {
+        attr { class => 'side_bar' } if $is_root;
+        for my $child ( @{ $node->{children} } ) {
+            li {
+                show( 'side_bar_entry', $child );
+                show( 'side_bar', $child ) if @{ $child->{children} };
+            };
+        }
+    };
+};
+
+private template 'side_bar_entry' => sub {
+    my ( $self, $node ) = @_;
+
+    return outs $node->{name} if !$node->{package};
+
+    show( 'package_link', $node->{package}, $node->{name} );
+};
+
 template 'index' => sub {
     my ( $self, $arguments ) = @_;
     my $recents = $arguments->{recents};
@@ -207,6 +229,7 @@ template 'index' => sub {
                 show( 'header', 'Index' );
                 body {
                     attr { onload => 'document.f.q.focus()' };
+                    show( 'side_bar', $arguments->{packages_as_tree}, 'root' );
                     show( 'searchbar' );
                     h1 { 'Index' };
                     p { 'Welcome to CPAN::Mini::Webserver. Start searching!' };
@@ -276,6 +299,7 @@ template 'search' => sub {
     html {
         show( 'header', "Search for `$q'" );
         body {
+            show( 'side_bar', $arguments->{packages_as_tree}, 'root' );
             div {
                 attr { class => 'container' };
                 div {
@@ -351,6 +375,7 @@ template 'author' => sub {
     html {
         show( 'header', $author->name );
         body {
+            show( 'side_bar', $arguments->{packages_as_tree}, 'root' );
             div {
                 attr { class => 'container' };
                 div {
@@ -594,6 +619,7 @@ template 'distribution' => sub {
     html {
         show( 'header', $author->name . ' > ' . $distvname );
         body {
+            show( 'side_bar', $arguments->{packages_as_tree}, 'root' );
             div {
                 attr { class => 'container' };
                 div {
@@ -675,6 +701,7 @@ template 'file' => sub {
     html {
         show( 'header', $author->name . ' > ' . $distvname . ' > ' . $filename );
         body {
+            show( 'side_bar', $arguments->{packages_as_tree}, 'root' );
             div {
                 attr { class => 'container' };
                 div {
@@ -722,6 +749,7 @@ template 'raw' => sub {
     html {
         show( 'header', $author->name . ' > ' . $distvname . ' > ' . $filename );
         body {
+            show( 'side_bar', $arguments->{packages_as_tree}, 'root' );
             div {
                 attr { class => 'container' };
                 div {

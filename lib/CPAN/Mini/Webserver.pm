@@ -627,6 +627,8 @@ sub package_page {
     my ( $pauseid, $distvname, $package_name ) = $path =~ m{^/package/(.+?)/(.+?)/(.+?)/$};
 
     my ( $p ) = grep $self->is_package_for_package_page( $pauseid, $distvname, $package_name, $_ ), $self->parse_cpan_packages->packages;
+    return $self->not_found_page( $package_name ) if !$p;
+
     my $filename = $p->filename;
     my $url      = "~$pauseid/$distvname/$filename";
 

@@ -10,7 +10,6 @@ use WebserverTester;
 use CPAN::Mini::Webserver;
 
 my $server = setup_test_minicpan( "t/mini" );
-plan tests => 51;
 
 my $name =
   ( $server->author_type eq 'Whois' )
@@ -71,6 +70,7 @@ like( $html, qr{$desc} );
 
 # Show package Acme::Buffy.pm
 redirect_ok( "/~$cpan_id/$dist/$dist/lib/$module", "/package/$cpan_id/$dist/Bundle::CpanTestDummies/" );
+error404_ok( "/package/$cpan_id/$dist/Bundle::CpanTestDummies2/" );
 
 # 'static' files
 css_ok( '/static/css/screen.css' );
@@ -109,3 +109,5 @@ like $html, qr/тестируем документацию/, 'utf8 text in file 
 
 my $res = error500_ok( "/download/~MELEZHIK/AMZ_TEST-v0.0.3/AMZ_TEST-v0.0.3/lib/AMZ/Test.pm" );
 like( $res->content, qr|\QDistribution &#39;AMZ_TEST-v0.0.3&#39; unknown for PAUSE id &#39;MELEZHIK&#39;.\E| );
+
+done_testing;

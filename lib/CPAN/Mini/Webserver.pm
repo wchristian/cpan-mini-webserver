@@ -45,6 +45,7 @@ has distvname           => ( is => 'rw' );
 has filename            => ( is => 'rw' );
 has index               => ( is => 'rw', isa => 'CPAN::Mini::Webserver::Index' );
 has config              => ( is => 'ro', lazy_build => 1 );
+has base_url            => ( is => 'ro', lazy_build => 1 );
 
 our $VERSION = '0.53';
 
@@ -97,6 +98,11 @@ sub send_http_header {
 sub _build_config {
     my %config = CPAN::Mini->read_config;
     return \%config;
+}
+
+sub _build_base_url {
+    my ( $self ) = @_;
+    return $self->config->{base_url} || "/";
 }
 
 sub _build_cgi {
@@ -297,7 +303,7 @@ sub not_found_page {
 
 sub redirect {
     my ( $self, $url ) = @_;
-    return "HTTP/1.0 302\015\012" . $self->cgi->redirect( $url );
+    return "HTTP/1.0 302\015\012" . $self->cgi->redirect( $self->base_url . $url );
 }
 
 sub search_page {
@@ -460,7 +466,7 @@ sub pod_page {
     my $d = $m->distribution;
 
     my ( $pauseid, $distvname ) = ( $d->cpanid, $d->distvname );
-    my $url = "/package/$pauseid/$distvname/$pkgname/";
+    my $url = "package/$pauseid/$distvname/$pkgname/";
 
     $self->redirect( $url );
 }
@@ -496,7 +502,7 @@ sub file_page {
     my $contents = $distribution->get_file_from_tarball( $filename );
 
     my $parser = Pod::Simple::HTML->new;
-    $parser->perldoc_url_prefix( '/perldoc?' );
+    $parser->perldoc_url_prefix( $self->base_url . 'perldoc?' );
     $parser->index( 0 );
     $parser->no_whining( 1 );
     $parser->no_errata_section( 1 );
@@ -529,7 +535,7 @@ sub download_file {
     my ( $distribution ) = grep { $_->cpanid eq uc $pauseid && $_->distvname eq $distvname } $self->parse_cpan_packages->distributions;
     die "Distribution '$distvname' unknown for PAUSE id '$pauseid'." if !$distribution;
 
-    return $self->redirect( "/authors/id/" . $distribution->prefix ) if !$filename;
+    return $self->redirect( "authors/id/" . $distribution->prefix ) if !$filename;
 
     my $contents = $distribution->get_file_from_tarball( $filename );
     $self->send_http_header(
@@ -603,7 +609,7 @@ sub dist_page {
     my ( $dist ) = $self->cgi->path_info =~ m{^/dist/(.+?)$};
     my $latest = $self->parse_cpan_packages->latest_distribution( $dist );
     if ( $latest ) {
-        $self->redirect( "/~" . $latest->cpanid . "/" . $latest->distvname );
+        $self->redirect( "~" . $latest->cpanid . "/" . $latest->distvname );
     }
     else {
         $self->not_found_page( $dist );
@@ -617,7 +623,7 @@ sub package_page {
 
     my ( $p ) = grep $self->is_package_for_package_page( $pauseid, $distvname, $package_name, $_ ), $self->parse_cpan_packages->packages;
     my $filename = $p->filename;
-    my $url = "/~$pauseid/$distvname/$filename";
+    my $url      = "~$pauseid/$distvname/$filename";
 
     # TODO: duplicate results and no results here need to be handled (maybe search through contents of a dist in that case)
 
@@ -699,6 +705,7 @@ sub render {
 
     $params                     ||= {};
     $params->{packages_as_tree} ||= $self->packages_as_tree;
+    $params->{base_url}         ||= $self->base_url;
 
     return Template::Declare->show( $template, $params );
 }

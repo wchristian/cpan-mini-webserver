@@ -23,5 +23,6 @@ my $html = html_page_ok( "~andk/" );
 like( $html, qr/CPAN-Test-Dummy-Perl5-Build-1.03/, "mirror with 00whois.xml does not cause a crash" );
 like( $html, qr/<li>Perl5/, "sidebar tree structure seems to exist" );
 like( $html, qr/<a href=.*CPAN::Test::Dummy::Perl5::Build.*>Build</, "there's a link in the sidebar" );
+unlike $html, qr@href="/@, "base url in config is observed, no local links";
 
 done_testing;

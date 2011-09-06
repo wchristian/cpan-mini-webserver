@@ -71,6 +71,15 @@ packages on the left. This can be enabled by adding the following to
 
   side_bar: 1
 
+=head2 Base Url
+
+Sometimes it is desirable to host CMW not at an url root, but at an arbitrary
+path inside it. For that purpose a base_url parameter can be set in in
+.minicpanrc to any string that will be prepended to all urls inside the
+application (a trailing / is expected, but not enforced):
+
+  base_url: /v2/cgi-bin/docs/server.cgi/
+
 =head1 CURRENT MAINTAINER
 
 Christian Walde <walde.christian@googlemail.com>

@@ -31,9 +31,11 @@ command line option.
 =head1 DESCRIPTION
 
 This program provides a web server that allows you to search and browse Mini
-CPAN.   
+CPAN.
 
 =head1 MINICPAN CONFIGURATION
+
+=head2 Real Author Names
 
 CPAN::Mini::Webserver can optionally return the real names of authors
 instead of an ascii representation of them. This depends on the file
@@ -42,6 +44,14 @@ this by default. You can tell it to mirror this file by putting the
 following line in your .minicpanrc:
 
   also_mirror: authors/00whois.xml
+
+=head2 Cache Directory
+
+CPAN::Mini::Webserver uses L<App::Cache> internally to cache index data about
+the cpan mirror. The directory it defaults to is inside the user's home dir,
+but by adding this to .minicpanrc it can be configured:
+
+  cache_dir: /tmp/your/cache/dir
 
 =head1 CURRENT MAINTAINER
 

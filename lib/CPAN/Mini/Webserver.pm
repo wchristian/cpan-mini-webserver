@@ -117,6 +117,7 @@ sub after_setup_listener {
 
     my %cache_opts = ( ttl => 60 * 60 );
     $cache_opts{directory} = $cache_dir if $cache_dir;
+    $cache_opts{directory} = $config{cache_dir} if $config{cache_dir};
     my $cache = App::Cache->new( \%cache_opts );
 
     my $whois_filename = file( $directory, 'authors', '00whois.xml' );

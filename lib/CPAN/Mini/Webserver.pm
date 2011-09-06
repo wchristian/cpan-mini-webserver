@@ -508,7 +508,7 @@ sub file_page {
 
     my $parser = Pod::Simple::HTML->new;
     $parser->perldoc_url_prefix( $self->base_url . 'perldoc?' );
-    $parser->index( 0 );
+    $parser->index( 1 );
     $parser->no_whining( 1 );
     $parser->no_errata_section( 1 );
     $parser->output_string( \my $html );

@@ -175,9 +175,14 @@ private template 'search_results' => sub {
         for my $package ( @packages ) {
             row {
                 cell {
-                    show( 'package_link', $package );
+                    show( 'package_link', $package->{pkg}, undef, $arguments );
                     outs ' by ';
-                    show( 'author_link', $package->distribution->cpanid, $arguments );
+                    show( 'author_link', $package->{pkg}->distribution->cpanid, $arguments );
+                };
+                cell {
+                    code { $package->{match}{before} };
+                    code { attr { class => "search_hit" }; $package->{match}{match} };
+                    code { $package->{match}{after} };
                 };
             };
         }

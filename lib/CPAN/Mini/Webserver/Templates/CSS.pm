@@ -385,6 +385,18 @@ a.positive:active {background-color:#529214;border:1px solid #529214;color:#fff;
 body .negative {color:#d12f19;}
 a.negative:hover, button.negative:hover {background-color:#fbe3e4;border:1px solid #fbc2c4;color:#d12f19;}
 a.negative:active {background-color:#d12f19;border:1px solid #d12f19;color:#fff;}
+
+/* sidebar */
+.side_bar {
+    float: left;
+    position: absolute;
+    left: 0;
+}
+
+.search_hit {
+    background-color: yellow;
+}
+
 END
     outs_raw $css;
 };

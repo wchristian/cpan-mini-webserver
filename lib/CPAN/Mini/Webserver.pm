@@ -291,6 +291,7 @@ sub search_page {
     Encode::_utf8_on( $q );    # we know that we have sent utf-8
 
     my ( $authors, $dists, $packages ) = $self->_do_search( $q );
+    $packages = $self->_packages_with_search_preview( $packages, $q );
     $self->send_http_header( 200, -charset => 'utf-8' );
     return Template::Declare->show(
         'search',
@@ -302,6 +303,40 @@ sub search_page {
             packages           => $packages
         }
     );
+}
+
+sub _packages_with_search_preview {
+    my ( $self, $packages, $q ) = @_;
+
+    my @packages = map $self->_add_search_preview( $_, $q ), @{$packages};
+
+    return \@packages;
+}
+
+sub _add_search_preview {
+    my ( $self, $package, $q ) = @_;
+
+    my $content = $package->file_content;
+    my $parser  = Pod::Simple::Text->new;
+    $parser->no_whining( 1 );
+    $parser->no_errata_section( 1 );
+    $parser->output_string( \my $text );
+    $parser->parse_string_document( $content );
+
+    $content = $text;
+    $content =~ s/[\n\r]/ /g;
+    $content =~ s/\s+/ /g;
+
+    my ( $match ) = ( $content =~ /($q)/i );
+    my $length = length $match;
+    my $pos = index $content, $match;
+
+    my $cap = ( 70 - $length ) / 2;
+
+    my $before = substr( $content, $pos - $cap,    $cap );
+    my $after  = substr( $content, $pos + $length, $cap );
+
+    return { match => { before => $before, after => $after, match => $match }, pkg => $package };
 }
 
 sub _do_search {

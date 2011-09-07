@@ -7,8 +7,37 @@ use base 'Template::Declare';
 private template 'header' => sub {
     my ( $self, $title, $arguments ) = @_;
 
+    my $index = $arguments->{index};
+
     head {
         title { $title };
+
+        if ( $index->{full_text} ) {
+            link {
+                attr {
+                    href => "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css",
+                    rel  => "stylesheet",
+                    type => "text/css",
+                }
+            };
+
+            script { attr { src => "http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js" } };
+            script { attr { src => "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" } };
+            script {
+                outs_raw qq|
+                    \$(document).ready(
+                        function() {
+                            \$("#searchbar_input").autocomplete(
+                                {
+                                    source: [| . join( ",", map qq|"$_"|, keys %{ $index->{index} } ) . qq|]
+                                }
+                            );
+                        }
+                    );
+                |;
+            };
+        }
+
         link {
             attr {
                 rel   => 'stylesheet',
@@ -129,7 +158,7 @@ private template 'searchbar' => sub {
                 cell {
                     attr { class => 'searchbar' };
                     input {
-                        { attr { type => 'text', name => 'q', value => $q } };
+                        { attr { type => 'text', name => 'q', value => $q, id => "searchbar_input" } };
                     };
                     input {
                         {

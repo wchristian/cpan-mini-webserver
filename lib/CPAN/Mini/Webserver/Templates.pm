@@ -5,14 +5,14 @@ use Template::Declare::Tags;
 use base 'Template::Declare';
 
 private template 'header' => sub {
-    my ( $self, $title, $base_url ) = @_;
+    my ( $self, $title, $arguments ) = @_;
 
     head {
         title { $title };
         link {
             attr {
                 rel   => 'stylesheet',
-                href  => $base_url . 'static/css/screen.css',
+                href  => $arguments->{base_url} . 'static/css/screen.css',
                 type  => 'text/css',
                 media => 'screen, projection'
             }
@@ -20,23 +20,23 @@ private template 'header' => sub {
         link {
             attr {
                 rel   => 'stylesheet',
-                href  => $base_url . 'static/css/print.css',
+                href  => $arguments->{base_url} . 'static/css/print.css',
                 type  => 'text/css',
                 media => 'print'
             }
         };
-        outs_raw '<!--[if IE]><link rel="stylesheet" href="' . $base_url . 'static/css/ie.css" type="text/css" media="screen, projection"><![endif]-->';
+        outs_raw '<!--[if IE]><link rel="stylesheet" href="' . $arguments->{base_url} . 'static/css/ie.css" type="text/css" media="screen, projection"><![endif]-->';
         link {
             attr {
                 rel  => 'icon',
-                href => $base_url . 'static/images/favicon.png',
+                href => $arguments->{base_url} . 'static/images/favicon.png',
                 type => 'image/png',
             }
         };
         link {
             attr {
                 rel   => 'search',
-                href  => $base_url . 'static/xml/opensearch.xml',
+                href  => $arguments->{base_url} . 'static/xml/opensearch.xml',
                 type  => 'application/opensearchdescription+xml',
                 title => 'minicpan search',
             }
@@ -221,7 +221,7 @@ template 'index' => sub {
 
     html {
         attr { xmlns => 'http://www.w3.org/1999/xhtml' };
-        show( 'header', 'Index', $arguments->{base_url} );
+        show( 'header', 'Index', $arguments );
         body {
             attr { onload => 'document.f.q.focus()' };
             div {
@@ -267,7 +267,7 @@ template '404' => sub {
     my $q = $arguments->{q};
     html {
         attr { xmlns => 'http://www.w3.org/1999/xhtml' };
-        show( 'header', 'File not found', $arguments->{base_url} );
+        show( 'header', 'File not found', $arguments );
         body {
             div {
                 attr { class => 'container' };
@@ -296,7 +296,7 @@ template 'search' => sub {
     my ( $self, $arguments ) = @_;
     my $q = $arguments->{q};
     html {
-        show( 'header', "Search for `$q'", $arguments->{base_url} );
+        show( 'header', "Search for `$q'", $arguments );
         body {
             show( 'side_bar', $arguments->{packages_as_tree}, 'root', $arguments );
             div {
@@ -372,7 +372,7 @@ template 'author' => sub {
     my $dates         = $arguments->{dates};
 
     html {
-        show( 'header', $author->name, $arguments->{base_url} );
+        show( 'header', $author->name, $arguments );
         body {
             show( 'side_bar', $arguments->{packages_as_tree}, 'root', $arguments );
             div {
@@ -621,7 +621,7 @@ template 'distribution' => sub {
     my $meta         = $arguments->{meta};
     my $pcp          = $arguments->{pcp};
     html {
-        show( 'header', $author->name . ' > ' . $distvname, $arguments->{base_url} );
+        show( 'header', $author->name . ' > ' . $distvname, $arguments );
         body {
             show( 'side_bar', $arguments->{packages_as_tree}, 'root', $arguments );
             div {
@@ -705,7 +705,7 @@ template 'file' => sub {
     my $contents = $arguments->{contents};
     my $html     = $arguments->{html};
     html {
-        show( 'header', $author->name . ' > ' . $distvname . ' > ' . $filename, $arguments->{base_url} );
+        show( 'header', $author->name . ' > ' . $distvname . ' > ' . $filename, $arguments );
         body {
             show( 'side_bar', $arguments->{packages_as_tree}, 'root', $arguments );
             div {
@@ -755,7 +755,7 @@ template 'raw' => sub {
     my $contents     = $arguments->{contents};
     my $html         = $arguments->{html};
     html {
-        show( 'header', $author->name . ' > ' . $distvname . ' > ' . $filename, $arguments->{base_url} );
+        show( 'header', $author->name . ' > ' . $distvname . ' > ' . $filename, $arguments );
         body {
             show( 'side_bar', $arguments->{packages_as_tree}, 'root', $arguments );
             div {

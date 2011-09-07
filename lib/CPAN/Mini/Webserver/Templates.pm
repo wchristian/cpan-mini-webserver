@@ -391,17 +391,22 @@ template 'author' => sub {
                                 show( 'distribution_link', $distribution, $arguments );
 
                             };
-                            cell {
-                                outs $dates->{ $distribution->distvname };
-                            };
+                            if ( !$arguments->{doc_mode} ) {
+                                cell {
+                                    outs $dates->{ $distribution->distvname };
+                                };
+                            }
                         };
                     }
                     outs_raw '</table>';
-                }
-                div {
-                    attr { class => 'span-6 last' };
-                    show( 'authorinfo', $author );
                 };
+
+                if ( !$arguments->{doc_mode} ) {
+                    div {
+                        attr { class => 'span-6 last' };
+                        show( 'authorinfo', $author );
+                    };
+                }
 
                 div {
                     attr { class => 'span-24 last' };
@@ -633,35 +638,38 @@ template 'distribution' => sub {
                 div {
                     attr { class => 'span-18 last' };
 
-                    #                    outs_raw '<table>';
-                    my ( @code, @test, @other, @doc );
-                    for ( @filenames ) {
-                        if ( m{(?:/bin/|\.p(?:m|l)$)} and not m{/inc/} ) {
-                            push @code, $_;
+                    if ( !$arguments->{doc_mode} ) {
+                        my ( @code, @test, @other, @doc );
+                        for ( @filenames ) {
+                            if ( m{(?:/bin/|\.p(?:m|l)$)} and not m{/inc/} ) {
+                                push @code, $_;
+                            }
+                            elsif ( m{\.pod$} ) {
+                                push @doc, $_;
+                            }
+                            elsif ( /\.t$/ ) {
+                                push @test, $_;
+                            }
+                            else {
+                                push @other, $_;
+                            }
                         }
-                        elsif ( m{\.pod$} ) {
-                            push @doc, $_;
-                        }
-                        elsif ( /\.t$/ ) {
-                            push @test, $_;
-                        }
-                        else {
-                            push @other, $_;
-                        }
+                        show( 'filelist', $pauseid, $distvname, 'Code',          \@code,  $arguments ) if @code;
+                        show( 'filelist', $pauseid, $distvname, 'Documentation', \@doc,   $arguments ) if @doc;
+                        show( 'filelist', $pauseid, $distvname, 'Tests',         \@test,  $arguments ) if @test;
+                        show( 'filelist', $pauseid, $distvname, 'Other',         \@other, $arguments ) if @other;
                     }
-                    show( 'filelist', $pauseid, $distvname, 'Code',          \@code,  $arguments ) if @code;
-                    show( 'filelist', $pauseid, $distvname, 'Documentation', \@doc,   $arguments ) if @doc;
-                    show( 'filelist', $pauseid, $distvname, 'Tests',         \@test,  $arguments ) if @test;
-                    show( 'filelist', $pauseid, $distvname, 'Other',         \@other, $arguments ) if @other;
                 };
-                div {
-                    attr { class => 'span-6 last' };
-                    show( 'metadata',     $meta,   $arguments );
-                    show( 'dependencies', $meta,   $pcp, $arguments );
-                    show( 'download',     $author, $distribution, $arguments );
-                    show( 'install',      $author, $distribution, \@filenames, $arguments );
-                    show( 'dist_links',   $distribution );
-                };
+                if ( !$arguments->{doc_mode} ) {
+                    div {
+                        attr { class => 'span-6 last' };
+                        show( 'metadata',     $meta,   $arguments );
+                        show( 'dependencies', $meta,   $pcp, $arguments );
+                        show( 'download',     $author, $distribution, $arguments );
+                        show( 'install',      $author, $distribution, \@filenames, $arguments );
+                        show( 'dist_links', $distribution );
+                    };
+                }
                 div {
                     attr { class => 'span-24 last' };
                     show( 'footer' );
@@ -702,10 +710,12 @@ template 'file' => sub {
                         outs $filename;
                     };
 
-                    a {
-                        attr { href => $arguments->{base_url} . "raw/~$pauseid/$distvname/$filename" };
-                        "See raw file";
-                    };
+                    if ( !$arguments->{doc_mode} ) {
+                        a {
+                            attr { href => $arguments->{base_url} . "raw/~$pauseid/$distvname/$filename" };
+                            "See raw file";
+                        };
+                    }
                     if ( $html ) {
                         div {
                             attr { id => "pod" };

@@ -713,6 +713,7 @@ sub render {
     $params                     ||= {};
     $params->{packages_as_tree} ||= $self->packages_as_tree;
     $params->{base_url}         ||= $self->base_url;
+    $params->{doc_mode}         ||= $self->config->{doc_mode};
 
     return Template::Declare->show( $template, $params );
 }

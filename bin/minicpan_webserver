@@ -80,6 +80,14 @@ application (a trailing / is expected, but not enforced):
 
   base_url: /v2/cgi-bin/docs/server.cgi/
 
+=head2 Doc Mode
+
+Sometimes it can be desirable to have CMW display only POD documentation and not
+the underlying code. This can be achieved by setting the doc_mode parameter in
+.minicpanrc:
+
+  doc_mode: 1
+
 =head1 CURRENT MAINTAINER
 
 Christian Walde <walde.christian@googlemail.com>

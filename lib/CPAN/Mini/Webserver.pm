@@ -371,36 +371,30 @@ sub _do_search {
     my $index   = $self->index;
     my @results = $index->search( $q );
     my $au_type = $self->author_type;
-    my ( @authors, @distributions, @packages );
 
-    if ( $q !~ /\w(?:::|-)\w/ ) {
-        @authors = uniq grep { ref( $_ ) eq "Parse::CPAN::${au_type}::Author" } @results;
-    }
-    if ( $q !~ /\w::\w/ ) {
-        @distributions = uniq grep { ref( $_ ) eq 'Parse::CPAN::Packages::Distribution' } @results;
-    }
-    if ( $q !~ /\w-\w/ ) {
-        @packages = uniq grep { ref( $_ ) eq 'Parse::CPAN::Packages::Package' } @results;
-    }
+    my @base = ( \@results, $q );
 
-    @authors = sort { $a->name cmp $b->name } @authors;
-
-    @distributions = sort {
-        my @acount = $a->dist =~ /-/g;
-        my @bcount = $b->dist =~ /-/g;
-        scalar( @acount ) <=> scalar( @bcount )
-          || $a->dist cmp $b->dist
-    } @distributions;
-
-    @packages = sort {
-        my @acount = $a->package =~ /::/g;
-        my @bcount = $b->package =~ /::/g;
-        scalar( @acount ) <=> scalar( @bcount )
-          || $a->package cmp $b->package
-    } @packages;
+    my @authors       = $self->_filter_sort_results( @base, qr/\w(?:::|-)\w/, "Parse::CPAN::${au_type}::Author",     " ",  "name" );
+    my @distributions = $self->_filter_sort_results( @base, qr/\w::\w/,       'Parse::CPAN::Packages::Distribution', "-",  "dist" );
+    my @packages      = $self->_filter_sort_results( @base, qr/\w-\w/,        'Parse::CPAN::Packages::Package',      "::", "package" );
 
     return ( \@authors, \@distributions, \@packages );
+}
 
+sub _filter_sort_results {
+    my ( $self, $results, $q, $skip_regex, $class, $split_chars, $attr ) = @_;
+
+    return if $q =~ $skip_regex;
+
+    my @filtered = uniq grep { $class eq ref $_ } @{$results};
+
+    @filtered = sort {
+        my @a = $a->$attr =~ /$split_chars/g;
+        my @b = $b->$attr =~ /$split_chars/g;
+        scalar( @a ) <=> scalar( @b ) || $a->$attr cmp $b->$attr;
+    } @filtered;
+
+    return @filtered;
 }
 
 sub author_page {

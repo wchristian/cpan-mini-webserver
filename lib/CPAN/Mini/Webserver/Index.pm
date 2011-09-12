@@ -10,6 +10,7 @@ use Lingua::StopWords qw( getStopWords );
 
 has 'index' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
 has 'full_text' => ( is => 'ro' );
+has 'index_subs' => ( is => 'ro' );
 
 sub add {
     my ( $self, $key, $words ) = @_;
@@ -26,6 +27,16 @@ sub create_index {
     $self->_index_items_with( "_author_words",  $parse_cpan_authors->authors );
     $self->_index_items_with( "_dist_words",    $parse_cpan_packages->latest_distributions );
     $self->_index_items_with( "_package_words", $parse_cpan_packages->packages );
+
+    $self->_index_sub_routines( $parse_cpan_packages->packages ) if $self->index_subs;
+
+    return;
+}
+
+sub _index_sub_routines {
+    my ( $self, @packages ) = @_;
+
+    $self->{subs}{ $_ } = 1 for map { $_->subs } @packages;
 
     return;
 }

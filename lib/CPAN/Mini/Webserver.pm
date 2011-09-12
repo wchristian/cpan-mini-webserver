@@ -156,7 +156,11 @@ sub after_setup_listener {
     my $scratch = dir( $cache->scratch );
     $self->scratch( $scratch );
 
-    my $index = CPAN::Mini::Webserver::Index->new( mini_dir => $self->directory, full_text => $self->config->{full_text} );
+    my $index = CPAN::Mini::Webserver::Index->new(
+        mini_dir => $self->directory,
+        full_text => $self->config->{full_text},
+        index_subs => $self->config->{index_subs},
+    );
     $self->index( $index );
     $index->create_index( $parse_cpan_authors, $parse_cpan_packages );
 }
@@ -374,9 +378,15 @@ sub _do_search {
 
     my @base = ( \@results, $q );
 
-    my @authors       = $self->_filter_sort_results( @base, qr/\w(?:::|-)\w/, "Parse::CPAN::${au_type}::Author",     " ",  "name" );
-    my @distributions = $self->_filter_sort_results( @base, qr/\w::\w/,       'Parse::CPAN::Packages::Distribution', "-",  "dist" );
-    my @packages      = $self->_filter_sort_results( @base, qr/\w-\w/,        'Parse::CPAN::Packages::Package',      "::", "package" );
+    my @packages = $self->_filter_sort_results( @base, qr/\w-\w/, 'Parse::CPAN::Packages::Package', "::", "package" );
+
+    if ( $self->cgi->param( 'find_only_subs' ) ) {
+        @packages = grep $_->has_matching_sub( qr/$q/i ), @packages;
+        return ( [], [], \@packages );
+    }
+
+    my @authors       = $self->_filter_sort_results( @base, qr/\w(?:::|-)\w/, "Parse::CPAN::${au_type}::Author",     " ", "name" );
+    my @distributions = $self->_filter_sort_results( @base, qr/\w::\w/,       'Parse::CPAN::Packages::Distribution', "-", "dist" );
 
     return ( \@authors, \@distributions, \@packages );
 }

@@ -63,6 +63,15 @@ adding this to .minicpanrc:
 
   full_text: 1
 
+=head3 Subroutine Indexing
+
+When full text indexing is enabled, indexing of subroutines via PPI can be
+enabled additionally. This will add a checkbox to the search field, restricting
+the autocomplete, as well as search results to subs found in packages. It can
+be enabled by adding this to .minicpanrc:
+
+  index_subs: 1
+
 =head2 Side Bar With All Packages
 
 On smaller mirrors it can be useful to have a side bar with all present

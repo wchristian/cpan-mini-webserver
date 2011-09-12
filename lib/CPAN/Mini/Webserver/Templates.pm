@@ -23,19 +23,29 @@ private template 'header' => sub {
 
             script { attr { src => "http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js" } };
             script { attr { src => "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" } };
-            script {
-                outs_raw qq|
-                    \$(document).ready(
-                        function() {
-                            \$("#searchbar_input").autocomplete(
-                                {
-                                    source: [| . join( ",", map qq|"$_"|, keys %{ $index->{index} } ) . qq|]
-                                }
-                            );
+            if ( $index->{index_subs} ) {
+                script {
+                    outs_raw q|
+                        $(document).ready(
+                            function() {
+                                $("#searchbar_input").autocomplete(
+                                    {
+                                        source: autocomplete_results
+                                    }
+                                );
+                            }
+                        );
+
+                        function autocomplete_results( request, response ) {
+                            var data = [| . join( ",", map qq|"$_"|, keys %{ $index->{index} } ) . q|];
+                            if ( $("#find_only_subs").attr('checked') ) data = [| . join( ",", map qq|"$_"|, keys %{ $index->{subs} } ) . q|];
+
+                            response( $.ui.autocomplete.filter( data, request.term ) );
+                            return;
                         }
-                    );
-                |;
-            };
+                    |;
+                };
+            }
         }
 
         link {
@@ -168,6 +178,24 @@ private template 'searchbar' => sub {
                               }
                         };
                     };
+                    if ( $arguments->{index}{index_subs} ) {
+                        label {
+                            attr {
+                                for => "find_only_subs";
+                            }
+                            outs_raw "&nbsp;&nbsp;&nbsp;&nbsp;Only Subs";
+                        };
+                        input {
+                            {
+                                attr {
+                                    type  => 'checkbox',
+                                    id    => "find_only_subs",
+                                    name  => "find_only_subs",
+                                    value => '1'
+                                  }
+                            };
+                        };
+                    }
                 };
             };
         };

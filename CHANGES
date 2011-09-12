@@ -1,5 +1,28 @@
 Revision history for Perl module CPAN::Mini::Webserver:
 
+0.54
+     [ ENHANCEMENTS]
+     - added cache dir option, configurable via cpan mini config file
+     - added global base url option, configurable via cpan mini config file
+     - added optional fulltext indexing of the cpan mirror
+     - added an option to switch off display of non-POD data
+     - added a list of module links to the distribution page
+     - enabled generation of TOC for the module pages
+     - added autocomplete to the search field when full text search is active
+     - added optional indexing of subroutines and restriction of search to subs
+
+     [ CHANGES ]
+     - moved some dist tarball interrogation functions out to
+       Parse::CPAN::Packages
+
+     [ BUGFIXES]
+     - indexer now does unique filtering only after lowercasing
+     - only try to show an author url if there is one
+     - link to the test matrix domain proper instead of slaven's script on bbbike
+     - fixed some templates so the body actually wraps around the content
+     - trying to load the page of a package that cannot be found now results in
+       a proper not found page, instead of a crash
+
 0.53 Wed Aug 24 14:20:00 GMT 2011
      [ BUGFIXES]
      - updated PreReqs so installation goes fine

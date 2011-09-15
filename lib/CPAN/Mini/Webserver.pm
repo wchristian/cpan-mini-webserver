@@ -26,6 +26,7 @@ use Parse::CPAN::Authors;
 use Parse::CPAN::Packages 2.35;
 use Parse::CPAN::Whois 0.02;
 use Parse::CPAN::Meta;
+BEGIN { $Pod::Simple::HTML::Computerese =  ' class="brush: pl; gutter: false; toolbar: false"'; }
 use Pod::Simple::HTML;
 use Path::Class;
 use PPI;

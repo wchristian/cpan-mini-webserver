@@ -18,6 +18,8 @@ private template 'header' => sub {
     head {
         title { $title };
 
+        script { attr { src => "http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js" } };
+
         if ( $index->{full_text} ) {
             link {
                 attr {
@@ -27,7 +29,6 @@ private template 'header' => sub {
                 }
             };
 
-            script { attr { src => "http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js" } };
             script { attr { src => "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" } };
             if ( $index->{index_subs} ) {
                 script {
@@ -53,6 +54,33 @@ private template 'header' => sub {
                 };
             }
         }
+
+        link {
+            attr {
+                rel  => 'stylesheet',
+                href => "http://alexgorbatchev.com/pub/sh/current/styles/shCore.css",
+                type => 'text/css',
+            }
+        };
+        link {
+            attr {
+                rel  => 'stylesheet',
+                href => "http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css",
+                type => 'text/css',
+            }
+        };
+        script { attr { src => "http://alexgorbatchev.com/pub/sh/current/scripts/shCore.js" } };
+        script { attr { src => "http://alexgorbatchev.com/pub/sh/current/scripts/shAutoloader.js" } };
+        script { attr { src => "http://alexgorbatchev.com/pub/sh/current/scripts/shBrushPerl.js" } };
+        script {
+            outs_raw q|
+                $(document).ready(
+                    function() {
+                        SyntaxHighlighter.all();
+                    }
+                );
+            |;
+        };
 
         link {
             attr {

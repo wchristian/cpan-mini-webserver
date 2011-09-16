@@ -48,7 +48,7 @@ has config              => ( is => 'ro', lazy_build => 1 );
 has is_cgi              => ( is => 'rw' );
 has base_url            => ( is => 'ro', lazy_build => 1 );
 
-our $VERSION = '0.54';
+our $VERSION = '0.55';
 
 sub service_name {
     "$ENV{USER}'s minicpan_webserver";

@@ -1,5 +1,9 @@
 Revision history for Perl module CPAN::Mini::Webserver:
 
+0.55
+     [ BUGFIXES]
+     - added Search::Tokenizer to dependencies (thanks to Brian Cassidy)
+
 0.54
      [ ENHANCEMENTS]
      - added cache dir option, configurable via cpan mini config file

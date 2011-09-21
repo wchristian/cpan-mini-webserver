@@ -20,6 +20,7 @@ WriteMakefile(
         'File::Slurp'              => '0',
         'File::Type'               => '0',
         'HTTP::Server::Simple'     => '0.34',
+        'Lingua::StopWords'        => '0',
         'List::MoreUtils'          => '0',
         'MIME::Base64'             => '0',
         'Module::InstalledVersion' => '0',

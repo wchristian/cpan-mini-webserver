@@ -4,7 +4,7 @@ CPAN::Mini::Webserver - Search and browse Mini CPAN
 
 # VERSION
 
-version 0.56
+version 0.57
 
 # SYNOPSIS
 

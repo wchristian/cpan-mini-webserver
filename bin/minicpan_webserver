@@ -1,6 +1,13 @@
 #!perl
 use strict;
 use warnings;
+
+package minicpan_webserver;
+
+# ABSTRACT: run a CPAN::Mini web server on the command line
+
+# VERSION
+
 use lib '../lib';
 use lib 'lib';
 use CPAN::Mini::Webserver;
@@ -13,10 +20,6 @@ my $server = CPAN::Mini::Webserver->new( $port );
 $server->run;
 
 __END__
-
-=head1 NAME
-
-minicpan_webserver - Search and browse Mini CPAN
 
 =head1 SYNOPSIS
 
@@ -100,14 +103,3 @@ the underlying code. This can be achieved by setting the doc_mode parameter in
 =head1 CURRENT MAINTAINER
 
 Christian Walde <walde.christian@googlemail.com>
-
-=head1 AUTHOR
-
-Leon Brocard <acme@astray.com>
-
-=head1 COPYRIGHT
-
-Copyright (C) 2008, Leon Brocard.
-
-This module is free software; you can redistribute it or
-modify it under the same terms as Perl itself.

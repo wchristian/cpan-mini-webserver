@@ -1,4 +1,6 @@
-Revision history for Perl module CPAN::Mini::Webserver:
+Revision history for Perl module {{$dist->name}}
+
+{{$NEXT}}
 
 0.55
      [ BUGFIXES]

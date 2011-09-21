@@ -1,4 +1,12 @@
+use strict;
+use warnings;
+
 package CPAN::Mini::Webserver::Index;
+
+# ABSTRACT: search term index for a CPAN::Mini web server
+
+# VERSION
+
 use Moose;
 use List::MoreUtils qw(uniq);
 use Search::QueryParser;
@@ -147,3 +155,9 @@ sub search_word {
 }
 
 1;
+
+__END__
+
+=head1 DESCRIPTION
+
+This module indexes words for the search feature in CPAN::Mini::Webserver.

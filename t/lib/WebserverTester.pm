@@ -12,7 +12,7 @@ use File::Path 'remove_tree';
 use File::Slurp qw( read_file write_file );
 
 use HTTP::Response;
-use CGI;
+use CGI 3.16;
 
 our @EXPORT;
 my $server;

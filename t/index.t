@@ -3,8 +3,6 @@ use strict;
 use warnings;
 
 use Test::InDistDir;
-use lib 't';
-
 use Test::More;
 use CPAN::Mini::Webserver::Index;
 

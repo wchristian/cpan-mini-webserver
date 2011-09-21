@@ -3,13 +3,13 @@ use strict;
 use warnings;
 
 use Test::InDistDir;
-use lib 't';
-
 use Test::More;
-use WebserverTester;
 use CPAN::Mini::Webserver;
 
-my $server = setup_test_minicpan( "t/mini" );
+use lib 't/lib';
+use WebserverTester;
+
+my $server = setup_test_minicpan( "corpus/mini" );
 
 my $name =
   ( $server->author_type eq 'Whois' )

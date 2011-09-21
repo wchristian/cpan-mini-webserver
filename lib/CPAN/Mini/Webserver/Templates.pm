@@ -1,7 +1,13 @@
-package CPAN::Mini::Webserver::Templates;
 use strict;
 use warnings;
-use Template::Declare::Tags;
+
+package CPAN::Mini::Webserver::Templates;
+
+# ABSTRACT: templates for the CPAN::Mini web server
+
+# VERSION
+
+use Template::Declare::Tags 0.29;
 use base 'Template::Declare';
 
 private template 'header' => sub {
@@ -867,24 +873,11 @@ template 'opensearch' => sub {
 |;
 };
 
+1;
+
 __END__
-
-=head1 NAME
-
-CPAN::Mini::Webserver::Templates - Templates for CPAN::Mini::Webserver
 
 =head1 DESCRIPTION
 
-This module holds the templates, CSS and images for
+This module holds the HTML templates for
 CPAN::Mini::Webserver.
-
-=head1 AUTHOR
-
-Leon Brocard <acme@astray.com>
-
-=head1 COPYRIGHT
-
-Copyright (C) 2008, Leon Brocard.
-
-This module is free software; you can redistribute it or
-modify it under the same terms as Perl itself.

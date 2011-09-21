@@ -3,11 +3,11 @@ use strict;
 use warnings;
 
 use Test::InDistDir;
-use lib 't';
-
 use Test::More;
-use WebserverTester;
 use CPAN::Mini::Webserver;
+
+use lib 't/lib';
+use WebserverTester;
 
 my $server = setup_test_minicpan( "t/mini" );
 

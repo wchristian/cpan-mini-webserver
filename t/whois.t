@@ -3,12 +3,12 @@ use strict;
 use warnings;
 
 use Test::InDistDir;
-use lib 't';
-
 use Test::More;
-use WebserverTester qw( setup_test_minicpan html_page_ok );
 use CPAN::Mini::Webserver;
 use Path::Class 'dir';
+
+use lib 't/lib';
+use WebserverTester qw( setup_test_minicpan html_page_ok );
 
 my $server = setup_test_minicpan( "t/mini_whois" );
 is( $server->scratch, dir( qw( t mini_whois cache cache _scratch ) ), "cache dir set via config" );

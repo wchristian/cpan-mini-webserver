@@ -1,7 +1,7 @@
 package CPAN::Mini::Webserver::Templates;
 use strict;
 use warnings;
-use Template::Declare::Tags;
+use Template::Declare::Tags 0.29;
 use base 'Template::Declare';
 
 # VERSION

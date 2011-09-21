@@ -8,6 +8,8 @@ use Search::Tokenizer;
 use Pod::Simple::Text;
 use Lingua::StopWords qw( getStopWords );
 
+# VERSION
+
 has 'index' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
 has 'full_text' => ( is => 'ro' );
 has 'index_subs' => ( is => 'ro' );

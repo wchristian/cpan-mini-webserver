@@ -4,6 +4,8 @@ use warnings;
 use Template::Declare::Tags;
 use base 'Template::Declare';
 
+# VERSION
+
 private template 'header' => sub {
     my ( $self, $title, $arguments ) = @_;
 

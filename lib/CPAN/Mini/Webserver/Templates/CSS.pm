@@ -4,6 +4,8 @@ use warnings;
 use Template::Declare::Tags;
 use base 'Template::Declare';
 
+# VERSION
+
 template 'css_ie' => sub {
     my $self = shift;
     my $css  = <<'END';

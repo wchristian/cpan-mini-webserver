@@ -5,6 +5,8 @@ use MIME::Base64;
 use Template::Declare::Tags;
 use base 'Template::Declare';
 
+# VERSION
+
 template 'images_logo' => sub {
     my $self    = shift;
     my $encoded = <<'END';

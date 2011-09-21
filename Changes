@@ -2,6 +2,13 @@ Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
 
+0.56      2011-09-21 16:40:36 Europe/Berlin
+     [ BUGFIXES]
+     - added Lingua::StopWords to dependencies (thanks to DOY)
+
+     [ CHANGES ]
+     - dzilified distribution
+
 0.55
      [ BUGFIXES]
      - added Search::Tokenizer to dependencies (thanks to Brian Cassidy)

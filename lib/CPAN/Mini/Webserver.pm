@@ -1,4 +1,12 @@
+use strict;
+use warnings;
+
 package CPAN::Mini::Webserver;
+
+# ABSTRACT: Search and browse Mini CPAN
+
+# VERSION
+
 use App::Cache;
 use Archive::Peek 0.33;
 use CPAN::Mini::App 0.565;
@@ -48,8 +56,6 @@ has index               => ( is => 'rw', isa => 'CPAN::Mini::Webserver::Index' )
 has config              => ( is => 'ro', lazy_build => 1 );
 has is_cgi              => ( is => 'rw' );
 has base_url            => ( is => 'ro', lazy_build => 1 );
-
-# VERSION
 
 sub service_name {
     "$ENV{USER}'s minicpan_webserver";
@@ -752,10 +758,6 @@ sub direct_to_template {
 
 __END__
 
-=head1 NAME
-
-CPAN::Mini::Webserver - Search and browse Mini CPAN
-
 =head1 SYNOPSIS
 
   % minicpan_webserver
@@ -765,27 +767,6 @@ CPAN::Mini::Webserver - Search and browse Mini CPAN
 This module is the driver that provides a web server that allows you to search
 and browse Mini CPAN. See L<minicpan_webserver> for details on its use.
 
-=head1 SUPPORT
-
-You may access the Git repository at:
-
-  https://github.com/wchristian/cpan-mini-webserver
-
-And may send support requests on RT.
-
 =head1 CURRENT MAINTAINER
 
 Christian Walde <walde.christian@googlemail.com>
-
-=head1 AUTHOR
-
-Leon Brocard <acme@astray.com>
-
-=head1 COPYRIGHT
-
-Copyright (C) 2008, Leon Brocard.
-
-=head1 LICENSE
-
-This module is free software; you can redistribute it or
-modify it under the same terms as Perl itself.

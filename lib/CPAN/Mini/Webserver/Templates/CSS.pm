@@ -1,10 +1,14 @@
-package CPAN::Mini::Webserver::Templates::CSS;
 use strict;
 use warnings;
-use Template::Declare::Tags;
-use base 'Template::Declare';
+
+package CPAN::Mini::Webserver::Templates::CSS;
+
+# ABSTRACT: static CSS content for a CPAN::Mini web server
 
 # VERSION
+
+use Template::Declare::Tags;
+use base 'Template::Declare';
 
 template 'css_ie' => sub {
     my $self = shift;
@@ -404,3 +408,10 @@ END
 };
 
 1;
+
+__END__
+
+=head1 DESCRIPTION
+
+This module holds the CSS content for
+CPAN::Mini::Webserver.

@@ -1,11 +1,15 @@
-package CPAN::Mini::Webserver::Templates::Images;
 use strict;
 use warnings;
+
+package CPAN::Mini::Webserver::Templates::Images;
+
+# ABSTRACT: image content for a CPAN::Mini web server
+
+# VERSION
+
 use MIME::Base64;
 use Template::Declare::Tags;
 use base 'Template::Declare';
-
-# VERSION
 
 template 'images_logo' => sub {
     my $self    = shift;
@@ -60,3 +64,10 @@ END
 };
 
 1;
+
+__END__
+
+=head1 DESCRIPTION
+
+This module holds the images for
+CPAN::Mini::Webserver.

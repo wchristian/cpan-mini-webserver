@@ -9,7 +9,7 @@ use CPAN::Mini::Webserver;
 use lib 't/lib';
 use WebserverTester;
 
-my $server = setup_test_minicpan( "t/mini" );
+my $server = setup_test_minicpan( "corpus/mini" );
 
 my $name =
   ( $server->author_type eq 'Whois' )

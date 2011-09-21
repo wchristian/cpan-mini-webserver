@@ -1,2 +1,2 @@
-local:  t/mini
+local:  corpus/mini
 remote: http://cpan.perl.org

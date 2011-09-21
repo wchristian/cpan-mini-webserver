@@ -10,8 +10,8 @@ use Path::Class 'dir';
 use lib 't/lib';
 use WebserverTester qw( setup_test_minicpan html_page_ok );
 
-my $server = setup_test_minicpan( "t/mini_whois" );
-is( $server->scratch, dir( qw( t mini_whois cache cache _scratch ) ), "cache dir set via config" );
+my $server = setup_test_minicpan( "corpus/mini_whois" );
+is( $server->scratch, dir( qw( corpus mini_whois cache cache _scratch ) ), "cache dir set via config" );
 ok $server->index->search_word( "functionality" ), "searching for a word returns a package";
 
 my $result = html_page_ok( "/search/", q => "functionality" );

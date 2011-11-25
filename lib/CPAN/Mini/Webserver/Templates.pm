@@ -549,7 +549,7 @@ private template 'metadata' => sub {
                 dt { ucfirst $datum; }
                 dd {
                     a {
-                        attr { href => $arguments->{base_url} . $meta->{resources}->{$datum}; };
+                        attr { href => $meta->{resources}->{$datum}; };
                         $meta->{resources}->{$datum};
                     }
 

@@ -18,3 +18,5 @@ distribution_type:   module
 meta-spec:
     url:     http://module-build.sourceforge.net/META-spec-v1.3.html
     version: 1.3
+resources:
+    bugtracker:     https://rt.dummy.cpan.org/Public/Dist/Display.html?Name=CPAN-Test-Dummy-Perl5-Make-Features

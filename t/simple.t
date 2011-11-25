@@ -72,6 +72,12 @@ like( $html, qr{$desc} );
 redirect_ok( "/~$cpan_id/$dist/$dist/lib/$module", "/package/$cpan_id/$dist/Bundle::CpanTestDummies/" );
 error404_ok( "/package/$cpan_id/$dist/Bundle::CpanTestDummies2/" );
 
+# Metadata links
+my $mddist = 'CPAN-Test-Dummy-Perl5-Make-Features-1.06';
+$html = html_page_ok( "/~$cpan_id/$mddist" );
+my $mdurl = quotemeta 'https://rt.dummy.cpan.org/Public/Dist/Display.html?Name=CPAN-Test-Dummy-Perl5-Make-Features';
+like ( $html, qr{<a href="$mdurl">$mdurl</a>} );
+
 # 'static' files
 css_ok( '/static/css/screen.css' );
 css_ok( '/static/css/print.css' );

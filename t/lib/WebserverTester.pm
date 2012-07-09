@@ -8,7 +8,7 @@ use Test::Builder;
 
 use Capture::Tiny 'capture';
 use Compress::Zlib;
-use File::Path 'remove_tree';
+use File::Path 2.08 'remove_tree';
 use File::Slurp qw( read_file write_file );
 
 use HTTP::Response;

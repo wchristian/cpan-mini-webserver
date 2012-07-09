@@ -1,6 +1,8 @@
 Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
+     - specified File::Path version dependency because some versions don't
+       have remove_tree
 
 0.57      2011-09-21 19:21:22 Europe/Berlin
      - rerelease to hopefully fix the worldwritables problem

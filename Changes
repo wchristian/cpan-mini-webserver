@@ -14,11 +14,11 @@ Revision history for Perl module {{$dist->name}}
      [ CHANGES ]
      - dzilified distribution
 
-0.55
+0.55      2011-09-16 13:48:56 Europe/Berlin
      [ BUGFIXES]
      - added Search::Tokenizer to dependencies (thanks to Brian Cassidy)
 
-0.54
+0.54      2011-09-12 22:20:39 Europe/Berlin
      [ ENHANCEMENTS]
      - added cache dir option, configurable via cpan mini config file
      - added global base url option, configurable via cpan mini config file

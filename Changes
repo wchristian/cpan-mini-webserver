@@ -1,25 +1,27 @@
 Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
+     [ BUGFIXES ]
      - specified File::Path version dependency because some versions don't
        have remove_tree
 
 0.57      2011-09-21 19:21:22 Europe/Berlin
+     [ GENERAL CLEANUP ]
      - rerelease to hopefully fix the worldwritables problem
 
 0.56      2011-09-21 16:40:36 Europe/Berlin
-     [ BUGFIXES]
+     [ BUGFIXES ]
      - added Lingua::StopWords to dependencies (thanks to DOY)
 
      [ CHANGES ]
      - dzilified distribution
 
 0.55      2011-09-16 13:48:56 Europe/Berlin
-     [ BUGFIXES]
+     [ BUGFIXES ]
      - added Search::Tokenizer to dependencies (thanks to Brian Cassidy)
 
 0.54      2011-09-12 22:20:39 Europe/Berlin
-     [ ENHANCEMENTS]
+     [ ENHANCEMENTS ]
      - added cache dir option, configurable via cpan mini config file
      - added global base url option, configurable via cpan mini config file
      - added optional fulltext indexing of the cpan mirror
@@ -33,7 +35,7 @@ Revision history for Perl module {{$dist->name}}
      - moved some dist tarball interrogation functions out to
        Parse::CPAN::Packages
 
-     [ BUGFIXES]
+     [ BUGFIXES ]
      - indexer now does unique filtering only after lowercasing
      - only try to show an author url if there is one
      - link to the test matrix domain proper instead of slaven's script on bbbike
@@ -42,11 +44,11 @@ Revision history for Perl module {{$dist->name}}
        a proper not found page, instead of a crash
 
 0.53 Wed Aug 24 14:20:00 GMT 2011
-     [ BUGFIXES]
+     [ BUGFIXES ]
      - updated PreReqs so installation goes fine
 
 0.52 Sat Aug 15 14:07:00 GMT 2011
-     [ BUGFIXES]
+     [ BUGFIXES ]
      - utf8 in file downloads is now transferred in binary mode
      - CPAN::Mini mirrors with 00whois.xml do not cause a crash anymore
 
@@ -56,14 +58,14 @@ Revision history for Perl module {{$dist->name}}
      - Rewrote parts of the documentation to be easier readable.
 
 0.51 Sat Jan 12 16:42:55 GMT 2011
-     [ ENHANCEMENTS]
+     [ ENHANCEMENTS ]
      - the display of recently added dists on the frontpage is now limited
        to 20 entries
      - changed the formatting of the depencency list on dist pages to be
        more readable
      - updated the stylesheet to the latest version
 
-     [ BUGFIXES]
+     [ BUGFIXES ]
      - the server does not crash anymore while loading a dist that has
        dependencies that are unknown to the server
      - selecting the target for a package page is now a bit less naive so

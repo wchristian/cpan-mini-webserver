@@ -4,16 +4,16 @@ CPAN::Mini::Webserver - Search and browse Mini CPAN
 
 # VERSION
 
-version 0.57
+version 0.58
 
 # SYNOPSIS
 
-  % minicpan_webserver
+    % minicpan_webserver
 
 # DESCRIPTION
 
 This module is the driver that provides a web server that allows you to search
-and browse Mini CPAN. See [minicpan_webserver](http://search.cpan.org/perldoc?minicpan_webserver) for details on its use.
+and browse Mini CPAN. See [minicpan\_webserver](http://search.cpan.org/perldoc?minicpan\_webserver) for details on its use.
 
 # CURRENT MAINTAINER
 
@@ -23,9 +23,9 @@ Christian Walde <walde.christian@googlemail.com>
 
 ## Bugs / Feature Requests
 
-Please report any bugs or feature requests by email to `bug-cpan-mini-webserver at rt.cpan.org`, or through
-the web interface at [http://rt.cpan.org/Public/Dist/Display.html?Name=CPAN-Mini-Webserver](http://rt.cpan.org/Public/Dist/Display.html?Name=CPAN-Mini-Webserver). You will be automatically notified of any
-progress on the request by the system.
+Please report any bugs or feature requests through the issue tracker
+at [http://rt.cpan.org/Public/Dist/Display.html?Name=CPAN-Mini-Webserver](http://rt.cpan.org/Public/Dist/Display.html?Name=CPAN-Mini-Webserver).
+You will be notified automatically of any progress on your issue.
 
 ## Source Code
 
@@ -34,7 +34,7 @@ public review and contribution under the terms of the license.
 
 [https://github.com/wchristian/cpan-mini-webserver](https://github.com/wchristian/cpan-mini-webserver)
 
-  git clone https://github.com/wchristian/cpan-mini-webserver.git
+    git clone https://github.com/wchristian/cpan-mini-webserver.git
 
 # AUTHORS
 
@@ -43,7 +43,7 @@ public review and contribution under the terms of the license.
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Christian Walde.
+This software is copyright (c) 2012 by Christian Walde.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

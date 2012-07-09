@@ -1,6 +1,8 @@
 Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
+
+0.58      2012-07-09 14:34:58 Europe/Berlin
      [ BUGFIXES ]
      - specified File::Path version dependency because some versions don't
        have remove_tree

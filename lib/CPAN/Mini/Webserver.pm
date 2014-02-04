@@ -366,6 +366,7 @@ sub _add_search_preview {
     $content =~ s/\s+/ /g;
 
     my ( $match ) = ( $content =~ /($q)/i );
+    return if not defined $match;
     my $length = length $match;
     my $pos = index $content, $match;
 
